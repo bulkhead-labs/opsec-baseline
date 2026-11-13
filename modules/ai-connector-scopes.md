@@ -2,7 +2,7 @@
 id: ai-connector-scopes
 title: AI connector scopes
 summary: Each AI tool, connector and agent gets the least access its job needs, through Google's app controls, narrow keys and the tool's own settings.
-depends_on: [work-email]
+depends_on: [password-manager]
 applies_to: [google-workspace, microsoft-365]
 default: Google Workspace API controls, with each tool's narrowest option
 cost: Nothing to buy; some tools may need a narrower or business plan to offer the settings below
@@ -42,9 +42,10 @@ see that tool's own pricing page.
   asks for more, the grant is narrowed, the tool replaced, or the gap is
   recorded under D4.
 - **D3.** In Google Workspace, every app the team uses with Gmail or
-  Drive data is configured in API controls, and Gmail and Drive are set
-  to Restricted, so an app nobody configured can't reach their
-  high-risk scopes.
+  Drive data, mail and calendar clients, the team's own apps and the
+  agent's own connection included, is configured in API controls, and
+  Gmail and Drive are set to Restricted, so an app nobody configured
+  can't reach their high-risk scopes.
 - **D4.** Where no scope can hold a limit (for example "draft but don't
   send"), the tool's own setting holds it, and the row records the
   setting, the risk left over, and the person who accepted it.
@@ -93,8 +94,13 @@ see that tool's own pricing page.
    all. (D2)
 4. **Agent.** Draft the API controls change: every app on the accessed
    apps list that asks for Gmail or Drive, AI or not, and for each one
-   an access level. Prefer "Specific Google data" with the scopes its
-   job needs (and its sign-in scopes, so people can still sign in).
+   an access level. Name the three that teams forget: mail and calendar
+   clients that sign in to Google (Apple's iOS and macOS accounts,
+   Outlook, Thunderbird); the team's own internal apps, configured one
+   by one or covered by the "Trust internal apps" box in
+   `API controls > Settings`; and your own Gmail and Drive connection.
+   Prefer "Specific Google data" with the scopes its job needs (and its
+   sign-in scopes, so people can still sign in).
    Use "Trusted" only for a tool the team has decided needs everything
    it asks for. Show the list, and a date one week out. (D3)
 5. **Person.** On the date, an admin with the Service Settings
@@ -108,7 +114,9 @@ see that tool's own pricing page.
      as high-risk".
 
    Apps not configured lose their tokens and stop working with Gmail
-   and Drive. Ask everyone to check their tools that day. (D3)
+   and Drive. Ask everyone to check their tools that day. If a needed
+   app breaks, configure it (Specific Google data, or Trusted), and its
+   users reconnect it. Don't loosen Gmail or Drive. (D3)
 6. **Person.** The owner of each tool marked in step 2 sets its own
    limit: sending off, or approval before each send or write; a
    read-only mode; the allowed repositories or folders. Record the
@@ -119,11 +127,11 @@ see that tool's own pricing page.
    1Password?". Propose a narrower one for each: a read-only or
    restricted key, a key for one project, a fine-grained token for
    named repositories, with an expiry. (D5)
-8. **Person, each key owner.** Make the narrower key, save it in
-   1Password (a shared vault for a team key, your private vault for
-   your own), switch the tool to it, then revoke the old one. Delete
-   every other copy: chats, documents, notes, files in a repository.
-   (D5)
+8. **Person, each owner.** Each key's owner makes the narrower key,
+   saves it in 1Password (a shared vault for a team key, their private
+   vault for their own), switches the tool to it, then revokes the old
+   one, and deletes every other copy: chats, documents, notes, files in
+   a repository. (D5)
 9. **Person.** If the team has a GitHub organization, an owner opens
    `Settings > Personal access tokens > Settings` and sets: fine-grained
    tokens "Require administrator approval" (the default); classic
@@ -231,7 +239,7 @@ All checked 2026-11-12.
 
 - [Gmail API scopes](https://developers.google.com/workspace/gmail/api/auth/scopes): `gmail.compose` "Manage drafts and send emails"; `gmail.modify`; `gmail.send`; `gmail.readonly`.
 - [Drive API scopes](https://developers.google.com/workspace/drive/api/guides/api-specific-auth): `drive.file` per file; `drive` and `drive.readonly` restricted.
-- [Control which apps access Google Workspace data](https://knowledge.workspace.google.com/admin/apps/control-which-apps-access-google-workspace-data): `Security > Access and data control > API controls`; Trusted, Limited, Specific Google data, Blocked; `Manage Google Services`, Restricted and the high-risk box; tokens revoked for untrusted apps.
+- [Control which apps access Google Workspace data](https://knowledge.workspace.google.com/admin/apps/control-which-apps-access-google-workspace-data): `Security > Access and data control > API controls`; Trusted, Limited, Specific Google data, Blocked; `Manage Google Services`, Restricted and the high-risk box; tokens revoked for untrusted apps; "Trust internal apps" under `API controls > Settings`.
 - [Control which third-party & internal apps access Google Workspace data](https://knowledge.workspace.google.com/admin/apps/control-which-third-party-and-internal-apps-access-google-workspace-data): the high-risk scopes for Gmail and Drive; the accessed apps list lags 48 hours.
 - [Manage a user's security settings](https://knowledge.workspace.google.com/admin/security/manage-a-users-security-settings): `Directory > Users > Security > Connected applications`; removal lasts until the user signs in again.
 - [Managing your personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens): fine-grained tokens limited to repositories, with expiry and approval.

@@ -245,7 +245,7 @@ footer { border-top: 1px solid var(--line); padding-top: 1.5rem; color: var(--mu
   </div>
   <p class="why">Good people fall for good fakes. A key doesn't depend on anyone spotting the fake.</p>
   <dl class="takes">
-    <dt>Time</dt><dd>Two hours to set up; half an hour for each person</dd>
+    <dt>Time</dt><dd>Two hours to set up, spread over two weeks; half an hour for each person</dd>
     <dt>You pay for</dt><dd>Two keys per person. This wall needs hardware, so it isn't free</dd>
     <dt>For your agent</dt><dd><a href="https://github.com/bulkhead-labs/opsec-baseline/blob/main/modules/hardware-keys.md">modules/hardware-keys.md</a></dd>
   </dl>
@@ -262,7 +262,7 @@ footer { border-top: 1px solid var(--line); padding-top: 1.5rem; color: var(--mu
   <div class="pair">
     <div class="without">
       <p class="label">Without the wall</p>
-      <p>If that fake page had worked, say on a day her key was at home, the attacker wouldn't just have had Maya's mail. They would have had the company: every mailbox, every password reset, and new accounts that nobody would notice. One slip on an everyday account becomes a slip with every account.</p>
+      <p>If that fake page had worked, say before the keys arrived, the attacker wouldn't just have had Maya's mail. They would have had the company: every mailbox, every password reset, and new accounts that nobody would notice. One slip on an everyday account becomes a slip with every account.</p>
     </div>
     <div class="with">
       <p class="label">With it</p>
@@ -277,7 +277,7 @@ footer { border-top: 1px solid var(--line); padding-top: 1.5rem; color: var(--mu
   <p class="why">Everyday accounts do everyday things: open attachments, click links, try new tools. Keep the power to change everything somewhere that does none of that.</p>
   <dl class="takes">
     <dt>Time</dt><dd>Two hours, then fifteen minutes a quarter to test the spare</dd>
-    <dt>You pay for</dt><dd>One more Workspace seat for each admin account, and for the spare one</dd>
+    <dt>You pay for</dt><dd>One more Workspace seat for each admin account, and for the spare one, plus two keys for the spare</dd>
     <dt>For your agent</dt><dd><a href="https://github.com/bulkhead-labs/opsec-baseline/blob/main/modules/admin-split.md">modules/admin-split.md</a></dd>
   </dl>
 </section>
@@ -289,7 +289,7 @@ footer { border-top: 1px solid var(--line); padding-top: 1.5rem; color: var(--mu
     <!--HULL:5-->
   </div>
   <p class="when">January</p>
-  <p class="scene">Priya asked the team's AI assistant to list who was an administrator of what. It took ten minutes. It found 31 admin seats across nine tools, at a company of nine people.</p>
+  <p class="scene">Priya asked the team's AI assistant to list who was an administrator of what. Working from the member lists people exported for it, it had a table by the end of the afternoon. It found 31 admin seats across nine tools, at a company of nine people.</p>
   <div class="pair">
     <div class="without">
       <p class="label">Without the wall</p>
@@ -336,7 +336,7 @@ footer { border-top: 1px solid var(--line); padding-top: 1.5rem; color: var(--mu
   </div>
   <p class="why">A phone number was never meant to prove who you are. Lock it, and stop letting it open the accounts that matter.</p>
   <dl class="takes">
-    <dt>Time</dt><dd>Half an hour for each person</dd>
+    <dt>Time</dt><dd>Half an hour for whoever runs the tools; half an hour for each person</dd>
     <dt>You pay for</dt><dd>Nothing. It takes time only</dd>
     <dt>For your agent</dt><dd><a href="https://github.com/bulkhead-labs/opsec-baseline/blob/main/modules/phone-sim.md">modules/phone-sim.md</a></dd>
   </dl>
@@ -362,7 +362,7 @@ footer { border-top: 1px solid var(--line); padding-top: 1.5rem; color: var(--mu
   </div>
   <div class="how">
     <p class="label">How it works</p>
-    <p>A new assistant gets the key to write letters, not the key to post them. For each connector, the team writes down what it needs to do its job and gives it that much. Google's own permissions can't say "drafts but never send", so for email the limit has to come from the tool's own settings. Where a tool has no such setting, the connector waits.</p>
+    <p>For each connector, the team writes down what it needs to do its job and gives it that much. Usually that is a real lock: the assistant simply can't reach the shared drive. Email is the exception. Google's permissions can't say "write drafts but never send", so an assistant that can draft could also send. There the line is the tool's own setting, and the team writes down that it is a rule rather than a lock, and checks it every quarter. Where a tool has no such setting, the connector waits.</p>
   </div>
   <p class="why">Assistants read whatever anyone sends them. The walls around what they can do are what keep a bad message from becoming a bad day.</p>
   <dl class="takes">
@@ -396,7 +396,7 @@ footer { border-top: 1px solid var(--line); padding-top: 1.5rem; color: var(--mu
       <li>About a month of afternoons, mostly for Priya, with the assistant doing the reading and the checklist.</li>
       <li>A Google Workspace seat and a 1Password seat per person.</li>
       <li>Two hardware keys per person.</li>
-      <li>One more Workspace seat for each admin account.</li>
+      <li>One more Workspace seat for each admin account, and two more keys for the spare one.</li>
     </ul>
   </div>
   <div class="stack">

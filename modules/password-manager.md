@@ -40,7 +40,7 @@ No hardware needed. For the current price, see 1Password's pricing page
 - **D4.** Everyone except the owners unlocks 1Password with their Google
   account (Unlock with SSO). The owners keep their account password and
   Secret Key, as 1Password requires, and two-factor is enforced for them
-  **(later: `hardware-keys` adds a key to each owner's account)**.
+  **(later: `hardware-keys` D5 adds a key to each owner's account)**.
 - **D5.** Each owner has saved their Emergency Kit offline: printed and
   put away, not a photo, not a cloud document.
 - **D6.** Vaults are set up by purpose: one shared vault per group of
@@ -173,12 +173,13 @@ Enterprise only. Bitwarden Teams has none of them (checked 2026-11-12).
 - **One password manager, company-owned.** Personal password managers
   can't be audited or offboarded.
 - **Unlock with SSO for everyone but the owners.** One sign-in to
-  protect instead of two, and removing someone from Google removes them
-  from 1Password too. A stolen Google sign-in alone doesn't open a vault:
-  each new device needs a code from one the person already linked. Once
-  `hardware-keys` is done, the vaults are behind a key. The owners stay
-  on password and Secret Key, so the company still has a way in if the
-  Google account is ever the problem.
+  protect instead of two. Someone suspended in Google can't link a new
+  device, but they still have to be removed from 1Password: it doesn't
+  sync from Google (step 15). A stolen Google sign-in alone doesn't open
+  a vault: each new device needs a code from one the person already
+  linked. Once `hardware-keys` is done, the vaults are behind a key. The
+  owners stay on password and Secret Key, so the company still has a way
+  in if the Google account is ever the problem.
 - **Given up:** two-step codes for shared logins sit in the same vault as
   their passwords. Someone who gets into the vault gets both. For shared
   logins, that is the price of the team using them at all.

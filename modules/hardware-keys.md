@@ -73,8 +73,13 @@ include security keys, so no seat or plan changes.
    passkeys and security keys section (Google's help page in Sources
    has a direct link). Google may offer to create a
    passkey on the key; either choice counts as a security key. If the key
-   asks you to set a PIN, choose one and keep it in your private
-   1Password vault. Then sign out, sign in in a private window with the
+   asks you to set a PIN, choose one you can remember, and keep a copy
+   in your private 1Password vault. Remembering it matters: members
+   unlock 1Password through Google, and Google can ask for the key's PIN
+   at sign-in, so a forgotten PIN locks the vault copy away too. A
+   YubiKey locks after eight wrong PINs in a row, and the reset that
+   unlocks it wipes the key, which must then be registered again
+   everywhere. Then sign out, sign in in a private window with the
    daily key, and again with the spare. Put the spare away. (D1, D2)
 4. **Agent.** Check, or ask an admin to check, `Admin console > Directory
    > Users > (the person) > Security > Passkeys & security keys` for every
@@ -82,50 +87,60 @@ include security keys, so no seat or plan changes.
    User reports > Security` report counts keys too, but it can lag 48
    hours and can count a phone's built-in key, so use the per-user page.
    List anyone not done, admins first. (D2)
-5. **Person.** Once every admin shows two keys: in `Admin console >
-   Security > Authentication > 2-step verification`, select a group or
-   organizational unit that holds only the admins, and set:
+5. **Agent.** Draft the lost-key list now, using "When a key is lost"
+   under Agent instructions: steps 6 and 7 lock out anyone without a
+   key, and the list is how they get back in. Name, for this team, who
+   can make backup codes for whom: any admin for a regular user; only a
+   super admin for another admin. (D8)
+6. **Person.** Once every admin shows two keys and the lost-key list is
+   written: in `Admin console > Security > Authentication > 2-step
+   verification`, select a group or organizational unit that holds only
+   the admins, and set:
    - methods: "Only security key";
-   - the backup code grace period: short, a few days;
+   - the new user enrollment period: short, for example one day, so a
+     new admin account can sign in once to add its keys;
+   - the 2-Step Verification policy suspension grace period: short, a
+     few days. It is how long a person can sign in with backup codes an
+     admin makes for them;
    - security codes: "Don't allow users to generate security codes".
 
-   Keep a second browser signed in as an admin while you do it. Then each
-   admin signs out and back in with a key. (D3)
-6. **Person.** A week later, once step 4 shows two keys for every user,
-   make the same three settings at the top-level organizational unit, so
+   Group settings override the unit's, so if you use a group, set all
+   four on the group. The enrollment period covers only new accounts:
+   an existing account moved into the group gets none, which is why
+   step 4 comes first. Keep a second browser signed in as an admin
+   while you do it. Then each admin signs out and back in with a key.
+   (D3)
+7. **Person.** A week later, once step 4 shows two keys for every user,
+   make the same settings at the top-level organizational unit, so
    they apply to everyone. Anyone without a key registered can't sign in
    until an admin helps them (the lost-key list), so don't skip the
    check. (D4)
-7. **Person.** In 1Password, as an owner: `Policies > Authentication
+8. **Person.** In 1Password, as an owner: `Policies > Authentication
    policy > Manage`, and check that security keys are allowed. (D5)
-8. **Person, each owner.** Add both keys to your 1Password account:
+9. **Person, each owner.** Add both keys to your 1Password account:
    1Password.com > your name > Manage Account > More Actions > Manage
    Two-Factor Authentication > Add a Security Key. Do it once per key.
    Everyone else unlocks with Google and has nothing to add. (D5, D6)
-9. **Agent.** For the registrar and the DNS host on the `work-email`
-   inventory, look up on the vendor's own help pages whether it accepts
-   security keys (also called WebAuthn, FIDO2 or passkeys), and how many.
-   Report the path, or that it doesn't. (D7)
-10. **Person.** At each one that does, the people who sign in to it add
+10. **Agent.** For the registrar and the DNS host on the `work-email`
+    inventory, look up on the vendor's own help pages whether it accepts
+    security keys (also called WebAuthn, FIDO2 or passkeys), and how
+    many. Report the path, or that it doesn't. (D7)
+11. **Person.** At each one that does, the people who sign in to it add
     both of their keys, and sign in once with each. Keep the
     authenticator app there as a second method if the service allows
     only one key. Its recovery codes stay in the restricted vault from
     `password-manager` D8. (D7)
-11. **Agent.** Draft the lost-key list, using "When a key is lost" under
-    Agent instructions. Name, for this team, who can make backup codes
-    for whom: any admin for a regular user; only a super admin for
-    another admin. (D8)
 
 ## Agent instructions
 
-- **Read first.** Steps 1, 4 and 9 are reading. Report what you find
+- **Read first.** Steps 1, 4 and 10 are reading. Report what you find
   before proposing the rest.
-- **Admins first, then everyone.** Never propose step 6 until step 5
+- **Admins first, then everyone.** Never propose step 7 until step 6
   has run for a week and every user shows two keys. A user with no key
   under "Only security key" is locked out until an admin makes backup
   codes for them.
 - **One admin is a single point of failure.** If there is only one
-  admin, say so before step 5: if they lose both keys, only Google's own
+  admin, say so before step 6: if they lose both keys, only Google's own
   account recovery gets the company back, and it asks for proof of the
   domain. Keep their spare key somewhere they can reach in a day.
   `admin-split` adds a second admin and a break-glass account. Do it
@@ -166,7 +181,7 @@ include security keys, so no seat or plan changes.
 |---|---|
 | D1 | The number of keys handed out, and each person's yes that the spare is stored apart, with the date |
 | D2 | For each user: two keys listed on the per-user Security page, and the date |
-| D3 | The group or unit name, its 2-Step Verification method, the grace period, the security code setting, the date |
+| D3 | The group or unit name, its 2-Step Verification method, the new user enrollment period, the suspension grace period, the security code setting, the date |
 | D4 | The same settings at the top level, and any named exception with the reason and who agreed |
 | D5 | For each owner: their yes that both keys are added, with the date |
 | D6 | That `password-manager` D4 is done: Unlock with SSO on for everyone but the owners, and the date |
@@ -216,7 +231,8 @@ All checked 2026-11-12.
 
 - [YubiKey 5C NFC](https://www.yubico.com/product/yubikey-5c-nfc/): current price; USB-C and NFC; FIDO2 and FIDO U2F; no battery.
 - [YubiKey 5 NFC](https://www.yubico.com/product/yubikey-5-nfc/): USB-A and NFC.
-- [Deploy 2-Step Verification](https://knowledge.workspace.google.com/admin/security/deploy-2-step-verification): `Security > Authentication > 2-step verification`; "Only security key" covers security keys and passkeys; security code options; under "Only security key", only an admin can make backup codes; settings per organizational unit or group.
+- [FIDO specifics](https://docs.yubico.com/hardware/yubikey/yk-tech-manual/yk5-apps-fido.html): the FIDO2 PIN locks after eight wrong tries in a row; a reset destroys every FIDO2 and U2F credential on the key.
+- [Deploy 2-Step Verification](https://knowledge.workspace.google.com/admin/security/deploy-2-step-verification): `Security > Authentication > 2-step verification`; "Only security key" covers security keys and passkeys; security code options; under "Only security key", only an admin can make backup codes; the new user enrollment period (1 day to 6 months, for new users); the 2-Step Verification policy suspension grace period (sign-in with admin-made backup codes); settings per organizational unit or group, and group settings override organizational units.
 - [Manage a user's security settings](https://knowledge.workspace.google.com/admin/security/manage-a-users-security-settings): `Directory > Users > Security`, "Passkeys & security keys", "Get backup verification codes"; only super admins make codes for other admins.
 - [User reports: Security](https://knowledge.workspace.google.com/admin/reports/user-reports-security): key counts can be inflated by built-in keys, and lag up to 48 hours.
 - [Use a security key for 2-Step Verification](https://support.google.com/accounts/answer/6103523): registering, passkey or plain key, removing a lost key.

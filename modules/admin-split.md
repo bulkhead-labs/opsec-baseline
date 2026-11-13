@@ -39,11 +39,14 @@ other services (GitHub, Slack, the cloud account, billing) are for
 ## What done looks like
 
 - **D1.** Each person who administers Google Workspace has a separate
-  admin account, for example `alex-admin@`, with both of their keys
-  registered and under "Only security key". It is used only for admin
-  work.
+  admin account, for example `theo-admin@` beside `theo@`, with both of
+  their keys registered and under "Only security key". It is used only
+  for admin work.
 - **D2.** At least two people have an admin account with the Super
-  Admin role.
+  Admin role, and each of them is a 1Password owner. Owners stay off
+  Unlock with SSO (`password-manager` D4), so they can still open the
+  restricted vault, and the break-glass password, if Google sign-in is
+  the thing that broke.
 - **D3.** A break-glass super admin account exists. It belongs to no one
   person, has two keys of its own, registered and stored in two
   different places, neither on a keychain. Its password is in the
@@ -64,24 +67,34 @@ other services (GitHub, Slack, the cloud account, billing) are for
 1. **Agent.** Ask an admin for the list in `Admin console > Account >
    Admin roles`: each role and who holds it. Compare it with the people
    who should administer. Propose who gets an admin account (at least
-   two people), the names, the break-glass account's name (one that
-   belongs to no person, for example `continuity@`), and where each of
-   its keys will live. Give the seat cost. (D1, D2, D3)
+   two people, each a 1Password owner), the names, the break-glass
+   account's name (one that belongs to no person, for example
+   `continuity@`), and where each of its keys will live. Give the seat
+   cost. (D1, D2, D3)
 2. **Person.** A super admin adds a user for each admin account and for
    the break-glass account in `Admin console > Directory > Users`, and
    puts each in the admins group or unit that has "Only security key"
-   from `hardware-keys` D3. The new-user enrollment period lets each one
-   sign in once to add keys. (D1, D3)
+   from `hardware-keys` D3. Its new user enrollment period lets each one
+   sign in once to add keys. If a new account can't (the period has
+   passed), a super admin makes backup codes for it in `Directory >
+   Users > (the account) > Security > 2-Step Verification > Get backup
+   verification codes`; for the break-glass account, keep none once its
+   keys are on. Moving an existing user into the group gives it no
+   enrollment window. (D1, D3)
 3. **Person, each one.** In a separate browser profile, sign in to your
    new admin account and register both of your keys, as in
    `hardware-keys` step 3. Sign out, then sign in with each key. Save
    the account's password in your private 1Password vault. (D1)
-4. **Person.** A super admin gives each new admin account the Super
-   Admin role: `Admin console > Directory > Users > (the admin account) >
-   Admin roles and privileges`. Any other role a daily account holds
-   moves to that person's admin account too. Each admin then signs in to
-   `admin.google.com` with their admin account and a key, and says it
-   works. (D1, D2)
+4. **Person.** A super admin gives the Super Admin role only to the
+   admin accounts of the people named for D2: `Admin console >
+   Directory > Users > (the admin account) > Admin roles and
+   privileges`. If one of them isn't a 1Password owner yet, an owner
+   makes them one first, unlocking with a password, not Google
+   (`password-manager` D4). Any other admin account gets the narrower
+   role its person needs, as in `admin-audit` D2. A role a daily
+   account holds moves to that person's admin account too. Each admin
+   then signs in to `admin.google.com` with their admin account and a
+   key, and says it works. (D1, D2)
 5. **Person.** An owner of 1Password makes the break-glass password with
    1Password's generator and saves it in the restricted vault. Sign in to
    the break-glass account in a private window, register its two keys,
@@ -94,7 +107,9 @@ other services (GitHub, Slack, the cloud account, billing) are for
    keychain. Write down where each is, and who can reach it. (D3)
 7. **Agent.** Check `Admin console > Account > Admin roles > Super
    Admin`: it should list at least two admin accounts and the break-glass
-   account. Don't go on until it does. (D2, D3)
+   account. In 1Password, check that each person behind those admin
+   accounts is in the Owners group. Don't go on until both hold.
+   (D2, D3)
 8. **Person.** Remove every admin role from each daily account, one
    person at a time, signed in with an admin account. Before each one,
    that person signs in to their own admin account and confirms it
@@ -113,8 +128,10 @@ other services (GitHub, Slack, the cloud account, billing) are for
       move the key; if they could see the restricted vault, change the
       break-glass password;
     - lost-key: an admin who loses both keys gets backup codes from
-      another super admin; a lost break-glass key is removed from the
-      account at once, and a new one is registered and stored;
+      another super admin; if the break-glass account must be used
+      without its keys, another super admin makes backup codes for it;
+      a lost break-glass key is removed from the account at once, and a
+      new one is registered and stored;
     - the inventory: Google Workspace's admins are now the admin
       accounts. (D7)
 
@@ -148,7 +165,7 @@ other services (GitHub, Slack, the cloud account, billing) are for
 | Check | Record |
 |---|---|
 | D1 | Each admin account's name and its person, two keys on its Security page, its group or unit, the date |
-| D2 | The admin accounts listed under the Super Admin role, and the date |
+| D2 | The admin accounts listed under the Super Admin role, that each of their people is in 1Password's Owners group, and the date |
 | D3 | The break-glass account's name, two keys on its Security page, where each key is kept and who can reach it, the password "in the restricted vault" with who confirmed |
 | D4 | The `Account > Admin roles` list, each role's admins, all admin accounts, and the date |
 | D5 | The super admin account recovery setting, and the date |
@@ -163,7 +180,7 @@ Microsoft's names and advice differ here:
 
 - D1: Microsoft says admin-only accounts don't need a Microsoft 365
   licence, so they need no extra seat. It also advises a name that doesn't say
-  the account is an admin, for example `alexc@` beside `alex.chen@`.
+  the account is an admin, for example `theo.r@` beside `theo@`.
 - D2: give the admin accounts the Global Administrator role, and other
   roles only where needed. Microsoft's "Add an administrator" page has
   the steps.
@@ -192,7 +209,8 @@ Microsoft's names and advice differ here:
   but it asks for proof of the domain and takes time.
 - **No backup codes for the break-glass account.** Codes next to its
   password would let someone with the vault in without a key. Its second
-  key, kept elsewhere, is the spare.
+  key, kept elsewhere, is the spare. If both keys are gone, another
+  super admin can make backup codes for it: that is the way back.
 - **Super admin recovery off.** Recovery by text message or email would
   be a weaker door than the key. Google's cloud guidance recommends
   keeping it off, and three super admin accounts can recover each other.

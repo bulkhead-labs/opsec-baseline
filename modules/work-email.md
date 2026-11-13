@@ -54,7 +54,7 @@ ask for it. The free "Sign in with Google" button is enough.
   D7)**.
 - **D4.** 2-Step Verification is enforced for every user, with any
   method except text messages and phone calls **(later: `hardware-keys`
-  moves it to keys)**.
+  D4 moves it to keys)**.
 - **D5.** A service inventory exists: every service the company uses,
   who owns it, how people sign in (Google, password, other), and who is
   admin.

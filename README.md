@@ -32,10 +32,10 @@ Roughly in dependency order. Each module names the ones it needs first.
 | 1 | [Work email, and sign in with Google](modules/work-email.md) | Personal accounts, a password per tool, nowhere to shut the door when someone leaves | A Workspace seat per person |
 | 2 | [Password manager](modules/password-manager.md) | Reused and shared passwords, recovery codes on sticky notes | A 1Password seat per person |
 | 3 | [Hardware keys](modules/hardware-keys.md) | Sign-in that can be phished | Two keys per person |
-| 4 | [Separate admin accounts](modules/admin-split.md) | Daily accounts that can change everything | One more Workspace seat per admin; the keys from 3 |
-| 5 | [Least-privilege admin audit](modules/admin-audit.md) | Standing admin nobody needs | Time only |
+| 4 | [Separate admin accounts](modules/admin-split.md) | Daily accounts that can change everything | One more Workspace seat per admin account, and two keys for the break-glass account |
+| 5 | [Least-privilege admin audit](modules/admin-audit.md) | Standing admin nobody needs | Time, and sometimes an admin seat |
 | 6 | [Phone and SIM hardening](modules/phone-sim.md) | SIM swaps and port-outs | Time only |
-| 7 | [AI connector scopes](modules/ai-connector-scopes.md) | Agents and connectors with more access than their job needs | Time only |
+| 7 | [AI connector scopes](modules/ai-connector-scopes.md) | Agents and connectors with more access than their job needs | Time; some tools keep the settings for business plans |
 
 ## Use it with your agent
 

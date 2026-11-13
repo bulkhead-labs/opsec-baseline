@@ -2,7 +2,7 @@
 id: phone-sim
 title: Phone and SIM hardening
 summary: Each person locks their number at the carrier, sets real PINs, and no account that matters trusts a text message or a phone call.
-depends_on: [password-manager]
+depends_on: [admin-split]
 applies_to: [google-workspace, microsoft-365]
 default: The carrier's own number lock and SIM lock
 cost: Nothing to buy; these are settings on plans people already have

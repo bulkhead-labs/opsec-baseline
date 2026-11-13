@@ -20,11 +20,11 @@ id: password-manager          # stable; never renamed once tagged
 title: Password manager
 summary: One line for the index.
 depends_on: [work-email]      # ids of modules to finish first
-applies_to: [google-workspace, microsoft-365]
+applies_to: [any]
 default: 1Password Business   # the one vendor we name
 fallback: Bitwarden Enterprise # only where a specific need calls for it, else omit
 cost: $8.99 per person per month   # the short form; details in the body
-time: 2-3 hours, plus 10 minutes per person
+time: 2 hours for the admin; 30-60 minutes per person
 checked: 2026-11-12           # when the prices and vendor facts were last checked
 ---
 ```
@@ -68,6 +68,8 @@ Each step names who does it:
 - **Person**: anything that can lock someone out, any purchase, anything
   that needs a person's own device, password or key. The agent explains
   the step, waits, then checks the result.
+- **Person, each one**: a person's step that every person on the team
+  does for their own account. The agent tracks who has done it.
 
 When in doubt, a step belongs to a person.
 
@@ -84,7 +86,7 @@ When in doubt, a step belongs to a person.
 ### Evidence
 
 - Evidence is a fact about a setting, with a date and who checked it:
-  "Admin console > Security > 2-Step Verification: enforced for all
+  "Admin console > Security > Authentication > 2-step verification: enforced for all
   users, 2026-11-12, checked by the agent from a screenshot the admin
   shared."
 - **Never a secret.** No passwords, recovery codes, backup codes, keys,

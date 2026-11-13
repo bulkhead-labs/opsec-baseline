@@ -85,9 +85,9 @@ Started: 2026-11-12
 
 | Check | Status | Date | By | Evidence |
 |---|---|---|---|---|
-| D1 | done | 2026-11-12 | Sam (admin), checked by the agent | Admin console > Users: 6 active, all on the company domain |
-| D2 | waiting on Sam | | | |
-| D3 | todo | | | |
+| D1 | done | 2026-11-12 | Sam (admin), checked by the agent | Registrar and DNS at Cloudflare; owner address a company group; two-step on; transfer lock on |
+| D2 | done | 2026-11-12 | Sam, checked by the agent | Directory > Users: 6 active, each one a person who works here |
+| D3 | waiting on Sam | | | |
 
 Notes:
 - The shared design account still signs in with a password. Moved to

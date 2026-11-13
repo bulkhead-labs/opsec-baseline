@@ -21,14 +21,14 @@ checklist. A person does anything that could lock someone out.
 
 ## The modules
 
-In dependency order. Each one assumes the ones above it are done.
+Roughly in dependency order. Each module names the ones it needs first.
 
 | | Module | Fixes | Cost |
 |---|---|---|---|
 | 1 | [Work email, and sign in with Google](modules/work-email.md) | Personal accounts, a password per tool, nowhere to shut the door when someone leaves | $7 per person per month |
 | 2 | [Password manager](modules/password-manager.md) | Reused and shared passwords, recovery codes on sticky notes | $8.99 per person per month |
 | 3 | Hardware keys ([#2](https://github.com/bulkhead-labs/opsec-baseline/issues/2)) | Sign-in that can be phished | Two keys per person |
-| 4 | Super admin split ([#3](https://github.com/bulkhead-labs/opsec-baseline/issues/3)) | Daily accounts that can change everything | Needs the keys from 3 |
+| 4 | Super admin split ([#3](https://github.com/bulkhead-labs/opsec-baseline/issues/3)) | Daily accounts that can change everything | One more Workspace seat per admin, $7 a month; the keys from 3 |
 | 5 | Least-privilege admin audit ([#4](https://github.com/bulkhead-labs/opsec-baseline/issues/4)) | Standing admin nobody needs | Time only |
 | 6 | Phone and SIM hardening ([#5](https://github.com/bulkhead-labs/opsec-baseline/issues/5)) | SIM swaps and port-outs | Time only |
 | 7 | The data-flow map ([#6](https://github.com/bulkhead-labs/opsec-baseline/issues/6)) | Not knowing where data goes, or who can touch it | Time only |

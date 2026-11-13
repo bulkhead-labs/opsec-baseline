@@ -5,7 +5,7 @@ summary: One company password manager for every login Google sign-in doesn't cov
 depends_on: [work-email]
 applies_to: [any]
 default: 1Password Business
-fallback: Bitwarden, only if the team must host it itself
+fallback: Bitwarden Enterprise, only if the team must host it itself
 cost: $8.99 per person per month (1Password Business, billed yearly)
 time: 2 hours for the admin; 30-60 minutes per person
 checked: 2026-11-12
@@ -30,9 +30,10 @@ account the company has.
 No hardware needed. Prices checked 2026-11-12; sources below.
 
 A team of ten or fewer can start on the 1Password Teams Starter Pack:
-$24.95 a month for up to ten people, billed yearly. It gives up the free
-family accounts and the Business policies this module uses, including
-enforcing two-factor for everyone (D4). Business is the default.
+$24.95 a month for ten people, billed yearly, with up to ten more seats
+at $4.99 each. It doesn't include the free family accounts. Before
+choosing it, check in 1Password's current help pages that it can
+enforce two-factor for everyone (D4). Business is the default.
 
 ## What done looks like
 
@@ -53,51 +54,62 @@ enforcing two-factor for everyone (D4). Business is the default.
 - **D7.** Every service the `work-email` inventory marks `password` has
   its login in 1Password, with a unique generated password. Shared logins
   live in a shared vault, not in a chat, a document or a browser.
-- **D8.** The recovery codes for the Google Workspace admins, the domain
-  registrar, and every service with two-step verification are in the
-  restricted vault, and every other copy is deleted. This finishes
-  `work-email` D1.
+- **D8.** The company's recovery codes (Google Workspace admins, the
+  domain registrar, the DNS host, the admin or billing login of each
+  core service) are in the restricted vault. Each person's own recovery
+  codes are in their private vault. Every other copy is deleted. This
+  finishes `work-email` D1.
 - **D9.** Each person has moved the passwords saved in their browser
   into 1Password and turned off the browser's offer to save passwords.
 
 ## Steps
 
 1. **Person.** An owner starts a 1Password Business account, using a
-   company address, and adds a second owner. (D1)
-2. **Person.** In the admin console, set the password policy to Strict,
-   then enforce two-factor authentication for everyone. 1Password
-   requires the Strict policy first. Give members a week. (D4)
-3. **Person.** Check that at least two people can recover accounts: the
-   two owners count. (D3)
-4. **Agent.** From the `work-email` user list, draft the list of people
+   company address. (D1)
+2. **Person.** Set the password policy to Strict. 1Password requires it
+   before two-factor can be enforced. (D4)
+3. **Agent.** From the `work-email` user list, draft the list of people
    to invite and the vaults to create. Suggest vaults by purpose, for
    example `Shared - Operations`, `Shared - Marketing`, and `Restricted -
    Recovery` for the owners. Show it for a yes. (D2, D6)
-5. **Person.** Create the vaults, set who can see each one, and invite
-   every person. (D2, D6)
-6. **Person, each one.** Accept the invitation, set a long account
+4. **Person.** Create the vaults, set who can see each one, and invite
+   every person. Tell everyone that two-factor will be required in a
+   week. (D2, D6)
+5. **Person, each one.** Accept the invitation, set a long account
    password you don't use anywhere else, turn on two-factor, save the
    Emergency Kit and print it, and install the browser extension and
    the phone app. (D4, D5)
-7. **Person, each one.** Import the passwords saved in your browser,
+6. **Person.** Once the second owner has accepted, add them to the
+   Owners group. Check that at least two people can recover accounts:
+   the two owners count. (D1, D3)
+7. **Person.** A week after the invitations, enforce two-factor
+   authentication for everyone. Anyone who hasn't set it up must do so
+   the next time they unlock 1Password. (D4)
+8. **Person, each one.** Import the passwords saved in your browser,
    then delete them from the browser and turn off its offer to save
    passwords. (D9)
-8. **Agent.** From the inventory, list every service marked `password`
+9. **Agent.** From the inventory, list every service marked `password`
    and every login the team says is shared, with the vault each one
    belongs in. Don't ask for the passwords. (D7)
-9. **Person, each one.** For each service on that list: sign in, change
-   the password to one 1Password generates, and save it in the vault the
-   list says. Where Google sign-in left an old password behind, replace
-   it with a generated one too. (D7)
-10. **Agent.** List the accounts whose recovery codes the company must
-    hold: each Google Workspace admin, the domain registrar, and every
-    service with two-step verification on. Ask each person where their
-    codes are kept now: a notes app, a photo, a document, paper. (D8)
-11. **Person, each one.** Put each set of recovery codes in the
-    restricted vault, then delete every other copy, including photos
+10. **Person, each one.** For each service on that list: sign in, change
+    the password to one 1Password generates, and save it in the vault the
+    list says. Where Google sign-in left an old password behind, replace
+    it with a generated one too. A service that `work-email` left on a
+    shared account can now move to the shared vault, and the shared
+    account can be closed (`work-email` D3). (D7)
+11. **Agent.** List the recovery codes to move, and ask where each set is
+    kept now (a notes app, a photo, a document, paper):
+    - the company's: each Google Workspace admin, the domain registrar,
+      the DNS host, and the admin or billing login of each core service;
+    - each person's own: their Google backup codes from `work-email`, and
+      any service they turned two-step verification on for. (D8)
+12. **Person.** An owner puts the company's recovery codes in the
+    restricted vault. (D8)
+13. **Person, each one.** Put your own recovery codes in your private
+    vault. Then delete every other copy of every set, including photos
     and their cloud backups. Where you can't find the codes, make a new
     set in the service, which cancels the old ones. (D8)
-12. **Agent.** Update the inventory: each `password` service now says
+14. **Agent.** Update the inventory: each `password` service now says
     which vault holds it. Update the offboarding list: remove the person
     from 1Password, and change every shared password they could see.
     (D2, D7)
@@ -109,14 +121,14 @@ enforcing two-factor for everyone (D4). Business is the default.
   inventory and from what people tell you.
 - **Never ask for a password or a code**, not even to check it works.
   Ask "is it saved in the vault?" and record the answer.
-- **Owners and recovery come first** (steps 1 to 3), before anyone moves
+- **Owners and recovery come first** (steps 1 to 7), before anyone moves
   a password in. A vault with one owner and no recovery is one forgotten
   password from gone.
 - **Two-step codes for shared logins** (a shared social account, a
   shared supplier portal) can go in the shared vault beside the login,
   so the team can use them. For a person's own accounts, and every admin
   account, prefer a passkey or, once `hardware-keys` is done, a key.
-  Say this when you propose step 9.
+  Say this when you propose step 10.
 - **Leave "Unlock with SSO" off**, if the team asks about signing in to
   1Password with Google. The reason is under "Why this default".
 - **Stop and ask** if nobody can find the recovery codes for a Google
@@ -134,7 +146,7 @@ enforcing two-factor for everyone (D4). Business is the default.
 | D5 | Each person's yes, with the date. Not the kit |
 | D6 | The vault names and who can see each one |
 | D7 | For each `password` service: the vault it's in, and the date the password was changed |
-| D8 | For each account on the step 10 list: "in the restricted vault, other copies deleted", who confirmed, the date |
+| D8 | For each set on the step 11 list: "in the restricted vault" or "in the owner's private vault", "other copies deleted", who confirmed, the date |
 | D9 | Each person's yes, with the date |
 
 ## Variants
@@ -142,13 +154,14 @@ enforcing two-factor for everyone (D4). Business is the default.
 ### Bitwarden
 
 Use Bitwarden only if the team must host its password manager on its
-own servers, or a customer contract requires open-source software. The
-checks are the same. Bitwarden's names: organizations for the account,
-collections for vaults, and account recovery administration for D3.
-Check Bitwarden's current help pages for which plan includes each
-policy this module uses.
-Self-hosting needs Bitwarden Enterprise, $6 per person per month on an
-annual plan; Teams ($4) is cloud only (checked 2026-11-12).
+own servers. The checks are the same. Bitwarden's names: organizations
+for the account, collections for vaults, and account recovery
+administration for D3.
+
+Bitwarden Enterprise, $6 per person per month on an annual plan, is
+needed even in Bitwarden's cloud: its pricing page puts account
+recovery (D3) and the policies behind D4 on Enterprise only, and
+self-hosting too. Teams, at $4, has none of them (checked 2026-11-12).
 
 ## Why this default
 
@@ -170,11 +183,11 @@ annual plan; Teams ($4) is cloud only (checked 2026-11-12).
 
 All checked 2026-11-12.
 
-- [1Password business pricing](https://1password.com/business-pricing): Business $8.99 per person per month billed yearly, with a free Families account per member; Teams Starter Pack $24.95 a month for ten, without Families.
+- [1Password business pricing](https://1password.com/business-pricing): Business $8.99 per person per month billed yearly, with a free Families account per member; Teams Starter Pack $24.95 a month for ten, up to ten more seats at $4.99, without Families.
 - [Recover accounts for team members](https://support.1password.com/recovery/): owners, administrators and groups with the "Recover Accounts" permission; have at least two.
 - [Emergency Kit](https://support.1password.com/emergency-kit/): what it holds.
 - [Manage two-factor authentication](https://support.1password.com/manage-two-factor-authentication/): enforcing two-factor for everyone needs the Strict password policy.
 - [Two-factor authentication](https://support.1password.com/two-factor-authentication/): authenticator app, security key or Duo.
 - [Passkeys](https://support.1password.com/save-use-passkeys/) and [one-time passwords](https://support.1password.com/one-time-passwords/).
 - [Unlock with SSO and Google](https://support.1password.com/sso-configure-google/).
-- [Bitwarden business pricing](https://bitwarden.com/pricing/business/): Teams $4, Enterprise $6, self-hosting on Enterprise only.
+- [Bitwarden business pricing](https://bitwarden.com/pricing/business/): Teams $4, Enterprise $6; account recovery, policies and self-hosting on Enterprise only.

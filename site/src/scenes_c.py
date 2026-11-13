@@ -1,96 +1,73 @@
 from lib import *
 
 # ======================= Scene 5: Separate admin accounts =======================
+# Two accounts side by side, and what each can do.
 
-def gear(cx, cy):
-    """A plain cog: eight square teeth and a hole."""
-    import math
-    pts = []
-    for k in range(8):
-        a = k * math.pi / 4
-        for da, r in ((-0.36, 9), (-0.2, 12.5), (0.2, 12.5), (0.36, 9)):
-            pts.append(f"{cx + r * math.cos(a + da):.1f} {cy + r * math.sin(a + da):.1f}")
-    d = "M" + " L".join(pts) + " Z"
-    return (f'<g class="gear s5-q s5-q9"><path d="{d}"/>'
-            f'<circle class="gear-h" cx="{cx}" cy="{cy}" r="3.5"/></g>')
+DOMAIN = "wrenstreet.example"   # reserved (RFC 2606): wrenstreet.com is a real, registered domain
+ROWS5 = ["MAIL AND LINKS", "DOCS AND TOOLS", "ADD PEOPLE", "CHANGE SETTINGS"]
+RY = [136, 158, 180, 202]
+
+
+def card(x, local, roles, can, cls, under=""):
+    """An account card at (x, 36), 172 x 184. roles: [(text, only-class)]; can: per state, which rows it can do."""
+    head = (f'{text(x + 12, 62, local, "f16")}{text(x + 12, 80, DOMAIN, "f12 mu s5-dom")}'
+            + "".join(text(x + 12, 102, r, "f12 " + c) for r, c in roles)
+            + f'<line class="thin" x1="{x + 12}" y1="114" x2="{x + 160}" y2="114"/>')
+    rows = ""
+    for i, (label, y) in enumerate(zip(ROWS5, RY)):
+        for st, rows_can in can.items():
+            on = i in rows_can
+            mark = (f'<rect class="m-can" x="{x + 14}" y="{y - 8}" width="8" height="8"/>' if on
+                    else f'<rect class="m-not" x="{x + 13}" y="{y - 5}" width="10" height="2"/>')
+            rows += f'<g class="only-{st}">{mark}{text(x + 30, y, label, "f12" + ("" if on else " mu"))}</g>'
+    return f'<g class="{cls}"><rect class="obj card5" x="{x}" y="36" width="172" height="184" rx="6"/>{under}{head}{rows}</g>'
 
 
 def s5():
     sid = "s5"
-    sq = []
-    k = 0
-    for r in range(3):
-        for c in range(3):
-            sq.append(f'<rect class="obj acct s5-q s5-q{k}" x="{242 + c * 24}" y="{54 + r * 24}" width="18" height="18" rx="3"/>')
-            k += 1
+    bands = "".join(f'<rect class="band5 s5-b{i}{" only-without" if i >= 2 else ""}" x="12" y="{y - 14}" width="164" height="20"/>'
+                    for i, y in enumerate(RY))
+    a_card = card(8, "maya@", [("EVERYDAY + ADMIN", "only-without"), ("EVERYDAY", "only-with")],
+                  {"without": {0, 1, 2, 3}, "with": {0, 1}}, "s5-a", bands)
+    b_card = card(220, "maya-admin@", [("ADMIN ONLY", "")], {"with": {2, 3}}, "s5-bc only-with")
     svg = f'''<svg viewBox="0 0 400 300" role="img" aria-labelledby="s5-alt-with">
-<line class="atk s5-in" x1="2" y1="58" x2="24" y2="58"/>
-<rect class="obj s5-maya" x="24" y="40" width="120" height="36" rx="6"/>
-<text class="f14 lc" x="34" y="63">maya@</text>
-<g class="only-without"><rect class="badge" x="104" y="32" width="46" height="16" rx="3"/>{text(127, 44, "ADMIN", "f11 onfill", "middle")}</g>
-{text(24, 92, "MAYA · EVERYDAY", "f12 mu")}
-<g class="only-with"><rect class="chipr" x="24" y="100" width="106" height="18" rx="3"/>{text(77, 113, "MAIL AND DOCS", "f11", "middle")}</g>
-<line class="ln" x1="144" y1="58" x2="232" y2="58"/>
-<line class="badln s5-o1 only-without" pathLength="1" x1="144" y1="58" x2="232" y2="58"/>
-<line class="badln s5-o2 only-with" pathLength="1" x1="144" y1="58" x2="184" y2="58"/>
-<rect class="bnd" x="232" y="24" width="150" height="130" rx="12"/>
-{text(244, 44, "EVERY ACCOUNT", "f12 mu")}
-{"".join(sq)}
-{gear(350, 84)}{text(350, 114, "SETTINGS", "f12", "middle")}
-<g class="only-without">
-<g class="s5-n1"><rect class="newq" x="252" y="164" width="18" height="18" rx="3"/>{text(261, 196, "NEW?", "f11 bd", "middle")}</g>
-<g class="s5-n2 last-without"><rect class="newq" x="300" y="164" width="18" height="18" rx="3"/>{text(309, 196, "NEW?", "f11 bd", "middle")}</g></g>
-<g class="only-with">
-<rect class="glowr s5-glow" x="176" y="24" width="24" height="70"/>
-<rect class="wallbar" x="184" y="24" width="8" height="70"/>
-{check(382, 24, 11, "s5-ck")}
-<path class="adminpath" d="M340 214 H368 V154"/><circle class="adminend" cx="368" cy="154" r="3"/>
-<rect class="obj safe s5-safe" x="60" y="162" width="280" height="130" rx="8"/>
-<rect class="safe-door s5-door" x="68" y="170" width="264" height="114" rx="4"/>
-<circle class="dial" cx="322" cy="227" r="9"/><line class="dial-t" x1="322" y1="227" x2="322" y2="220"/>
-{text(78, 186, "ADMIN ACCOUNTS", "f12 mu")}
-{text(78, 206, "MAYA · ADMIN", "f12")}{keyglyph(200, 199, "s5-k1")}
-{text(78, 226, "THEO · ADMIN", "f12")}{keyglyph(200, 219, "s5-k2")}
-{text(78, 246, "SPARE", "f12")}{keyglyph(200, 239, "s5-k3")}
-<line class="thin" x1="250" y1="235" x2="250" y2="251"/>{keyglyph(282, 239, "s5-k4")}
-{text(78, 262, "BREAK-GLASS · 2 KEYS, 2 PLACES", "f12 mu s5-t1")}
-{text(78, 276, "TESTED QUARTERLY", "f12 mu s5-t2 last-with")}
-</g>
+{a_card}
+<line class="atk s5-atk" x1="94" y1="8" x2="94" y2="36"/>
+<g class="only-without"><rect class="ph5" x="220" y="36" width="172" height="184" rx="6"/>
+{text(306, 124, "NO ADMIN", "f12 mu", "middle")}{text(306, 142, "ACCOUNT", "f12 mu", "middle")}
+{text(8, 250, "THE WHOLE COMPANY", "f13 bd s5-whole last-without")}</g>
+{b_card}
+<g class="only-with">{keyglyph(360, 95)}
+<rect class="glowr s5-glow" x="188" y="36" width="24" height="184"/>
+<rect class="wallbar" x="196" y="36" width="8" height="184"/>
+<line class="atk s5-hit" x1="180" y1="191" x2="196" y2="191"/>
+{check(384, 40, 11, "s5-ck")}
+{text(8, 250, "ALSO: theo-admin@", "f12 mu s5-t1")}
+{text(8, 270, "BREAK-GLASS: 2 KEYS, 2 PLACES", "f12 mu s5-t2 last-with")}</g>
 </svg>'''
-    css('''#s5 .s5-maya{stroke:var(--bad);fill:var(--bad-tint)}
-.badge{fill:var(--text)}.onfill{fill:var(--surface)}
-.chipr{fill:var(--bg);stroke:var(--text);stroke-width:1.5}
-.badln{stroke:var(--bad);stroke-width:2.5;stroke-dasharray:1;stroke-linecap:round}
-.gear{fill:var(--bg);stroke:var(--text);stroke-width:2;stroke-linejoin:round}
-.gear-h{fill:var(--surface)}
-.adminpath{fill:none;stroke:var(--text);stroke-width:1.5}
-.adminend{fill:var(--text)}
-#s5[data-state="without"] .acct{stroke:var(--bad);fill:var(--bad-tint)}
-#s5[data-state="without"] .gear{stroke:var(--bad);fill:var(--bad-tint)}
-.newq{fill:none;stroke:var(--bad);stroke-width:1.5;stroke-dasharray:3 3}
+    css('''.stage .f16{font-size:16px;font-weight:600}
+@media (max-width:40rem){#s5 .s5-dom{letter-spacing:0}}
+.m-can{fill:var(--text)}.m-not{fill:var(--muted)}
+.band5{fill:var(--bad-tint)}
+#s5 .s5-a .card5{stroke:var(--bad)}
+.ph5{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:4 4}
 .glowr{fill:var(--accent-tint);opacity:0}
-.wallbar{fill:var(--accent)}
-.safe{stroke-width:3}
-.kg-glow{fill:var(--accent-tint);opacity:0}''')
-    KF.append("@keyframes s5door{0%{stroke:var(--line)}50%{stroke:var(--accent)}100%{stroke:var(--line)}}")
+.wallbar{fill:var(--accent)}''')
     for st in ("without", "with"):
-        A(sid, st, ".s5-in", a("wr", 350, 300, EO))
-        A(sid, st, ".s5-maya", a("fromplain", 250, 600))
-    # Without, 3.4s
-    A(sid, "without", ".s5-o1", a("draw", 400, 900, EO))
-    for k in range(10):
-        A(sid, "without", f".s5-q{k}", a("fromplain", 250, 1300 + k * 110))
-    A(sid, "without", ".s5-n1", a("in", 300, 2600))
-    A(sid, "without", ".s5-n2", a("in", 300, 2900))
-    # With, 4.2s
-    A(sid, "with", ".s5-o2", a("draw", 300, 900, EO))
-    A(sid, "with", ".s5-glow", a("flash", 250, 1200))
-    A(sid, "with", ".s5-ck", a("pop", 160, 1500, EO))
-    A(sid, "with", ".s5-door", a("s5door", 400, 1900))
-    for k, t in enumerate((1950, 2350, 2750, 3050)):
-        A(sid, "with", f".s5-k{k + 1} .kg-glow", a("flash", 350, t))
-    A(sid, "with", ".s5-t1", a("in", 600, 3300))
-    A(sid, "with", ".s5-t2", a("in", 600, 3600))
+        A(sid, st, ".s5-atk", a("wd", 400, 300, EO))
+        A(sid, st, ".s5-a .card5", a("fromstroke", 250, 700))
+        A(sid, st, ".s5-b0", a("in", 250, 1000))
+        A(sid, st, ".s5-b1", a("in", 250, 1300))
+    # Without, 2.7s: the slip reaches every row, and there is no admin account beside it.
+    A(sid, "without", ".s5-b2", a("in", 250, 1600))
+    A(sid, "without", ".s5-b3", a("in", 250, 1900))
+    A(sid, "without", ".s5-whole", a("in", 400, 2300))
+    # With, 3.2s: it reaches mail and docs, then the wall.
+    A(sid, "with", ".s5-hit", a("wr", 250, 1650, EO))
+    A(sid, "with", ".s5-glow", a("flash", 250, 1900))
+    A(sid, "with", ".s5-ck", a("pop", 160, 2250, EO))
+    A(sid, "with", ".s5-t1", a("in", 300, 2550))
+    A(sid, "with", ".s5-t2", a("in", 300, 2900))
     return svg
 
 

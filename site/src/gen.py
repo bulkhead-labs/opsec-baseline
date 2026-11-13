@@ -1,11 +1,37 @@
 """Generate site/story.html for Seven Walls. Edit the scenes here, not story.html: python3 site/build.py runs this first."""
 import sys
 from pathlib import Path
-from lib import KF, CSS
+from lib import KF, CSS, END
 import scenes_a, scenes_b, scenes_c, scenes_d
 
 OUT = Path(__file__).resolve().parent.parent / "story.html"
 MOD = "https://github.com/bulkhead-labs/opsec-baseline/blob/main/modules/"
+SITE = "https://bulkhead-labs.github.io/opsec-baseline/"
+DESC = ("Seven security basics a small team can set up itself, told as one year at an invented nine-person company. "
+        "No security background needed.")
+CARD_ALT = "The Bulkhead Labs mark: a hull seen from above, cut into compartments, one lit orange."
+# Icon and manifest paths are relative, so they resolve under the /opsec-baseline/ project path. The og:image is
+# absolute and read only by link unfurlers, never by the page.
+HEAD = f'''<title>Seven Walls · Bulkhead Labs</title>
+<meta name="description" content="{DESC}">
+<link rel="canonical" href="{SITE}">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#ECEFF2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15191D" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Bulkhead Labs">
+<meta property="og:title" content="Seven Walls: security basics for small teams">
+<meta property="og:description" content="{DESC}">
+<meta property="og:url" content="{SITE}">
+<meta property="og:image" content="{SITE}og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{CARD_ALT}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image:alt" content="{CARD_ALT}">'''
 
 BASE_CSS = r'''
 /* ---------- Tokens (v1's, plus three tints and the motion tokens) ---------- */
@@ -80,6 +106,17 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; align-self: flex-start;
 }
 .next:hover, .back:hover { color: var(--text); }
+/* Next: lit once the reader has seen the scene. The border is always there, so lighting it moves nothing. */
+.next { border: 1.5px solid transparent; border-radius: 4px; padding: 0 14px; margin-left: -14px; transition: color 400ms linear, border-color 400ms linear; }
+.next.is-ready { color: var(--text); border-color: var(--accent); }
+.arr { display: inline-block; }
+.is-ready .arr { animation: nudge 700ms var(--ease-inout) 400ms 2; }
+@keyframes nudge { 50% { transform: translateY(3px); } }
+@media (prefers-reduced-motion: reduce) { .next, .start { transition: none; } .is-ready .arr { animation: none; } }
+
+/* What the wall does: plain sentences, the same in every mode. */
+.what { font-size: 1.0625rem; line-height: 1.5; color: var(--text); max-width: 40ch; }
+.addr { font-family: var(--f-mono); font-size: .9em; letter-spacing: 0; white-space: nowrap; }
 
 /* ---------- The hull bar ---------- */
 .hullbar {
@@ -153,12 +190,19 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .seg .b-with[aria-pressed="true"] { border-color: var(--ok); color: var(--ok); }
 .seg [aria-pressed="true"] .dot { background: currentColor; }
 .replay { margin-left: auto; }
+/* The third button: Pause while the stage cycles, Replay otherwise. Both faces share one grid cell, so the button
+   keeps one size and swapping faces moves nothing. */
+.control .replay { display: inline-grid; }
+.replay .face { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.replay .f-pause, .replay.is-pause .f-replay { visibility: hidden; }
+.replay.is-pause .f-pause { visibility: visible; }
+.replay .bars { display: block; width: 10px; height: 12px; fill: currentColor; }
 .replay .glyph { font-size: 18px; line-height: 1; }
 .btn-short { display: none; }
 @media (max-width: 40rem) { .replay .rl { display: none; } .replay { width: 44px; justify-content: center; padding: 0; } }
 @media (max-width: 359px) { .btn-long { display: none; } .btn-short { display: inline; } }
 .no-js .control { display: none; }
-@media (prefers-reduced-motion: reduce) { .replay { display: none; } }
+@media (prefers-reduced-motion: reduce) { .control .replay { display: none; } }
 
 /* ---------- Caption ---------- */
 .caption { display: flex; flex-direction: column; gap: 8px; font-size: 1.0625rem; line-height: 1.4; }
@@ -256,7 +300,8 @@ PAGE_CSS = r'''
   align-self: flex-start; font-family: var(--f-mono); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600;
   text-decoration: none; border: 1.5px solid var(--text); border-radius: 4px; padding: 0 16px; min-height: 44px; display: inline-flex; align-items: center;
 }
-.start:hover { border-color: var(--accent); }
+.start:hover, .start.is-ready { border-color: var(--accent); }
+.start { transition: border-color 400ms linear; }
 
 /* ---------- Scene 1: Wren Street ---------- */
 .cast { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -347,13 +392,19 @@ def stagger():
     return "\n".join(out)
 
 
+def arr(label):
+    """A Next link's label, its arrow wrapped so the highlight can nudge it."""
+    assert label.endswith(" ↓")
+    return label[:-2] + '&nbsp;<span class="arr" aria-hidden="true">↓</span>'
+
+
 def control():
     return '''<div class="control">
 <div class="seg" role="group" aria-label="Compare">
 <button type="button" class="b-without" data-set="without" aria-pressed="false"><span class="dot" aria-hidden="true"></span><span class="btn-long">Without the wall</span><span class="btn-short">Without</span></button>
 <button type="button" class="b-with" data-set="with" aria-pressed="true"><span class="dot" aria-hidden="true"></span><span class="btn-long">With the wall</span><span class="btn-short">With</span></button>
 </div>
-<button type="button" class="replay" aria-label="Replay"><span class="glyph" aria-hidden="true">↻</span><span class="rl" aria-hidden="true">Replay</span></button>
+<button type="button" class="replay" aria-label="Replay"><span class="face f-replay" aria-hidden="true"><span class="glyph">↻</span><span class="rl">Replay</span></span><span class="face f-pause" aria-hidden="true"><svg class="bars" viewBox="0 0 10 12"><rect x="0" y="0" width="3" height="12"/><rect x="7" y="0" width="3" height="12"/></svg><span class="rl">Pause</span></span></button>
 </div>'''
 
 
@@ -378,6 +429,7 @@ WALLS = [
          cw="Tools signed up with a personal email stay open after they leave.",
          ch="One switch closes most doors. A short list closes the rest.",
          take="You can’t take back access the company never handed out.",
+         what="Everyone signs in to every tool with their company Google account. When someone leaves, turning off that one account stops them signing in anywhere. A short list closes the few tools that keep them signed in.",
          time="Half a day for the admin; 30 minutes per person",
          pay="A Google Workspace Business Starter seat per person",
          legend='<span><span class="gl" aria-hidden="true">G</span>= signs in with Google</span><span>••• = its own password</span>',
@@ -386,40 +438,43 @@ WALLS = [
          ah="Every tool signs in with the company account. Priya turns it off, ticks two tools on a short offboarding list, and the sales lead leaves with nothing still open."),
     dict(id="password-manager", n=2, sid="s3", meta="WALL 2 OF 7 · AUGUST", name="Password manager",
          hook="A cycling forum Theo forgot about was breached. His old password leaked.",
-         cw="One password, reused. The leak opens every door it fits.",
-         ch="A different password for every site. The leak opens one old forum.",
+         cw="The same password, Sunset2019!, on every site. One leak opens them all.",
+         ch="A different random password on each site. The leak opens only the old forum.",
+         what="A password manager makes a long, random password for every site and fills it in for you. When one site leaks, that password opens nothing else. Theo remembers one password; 1Password remembers the rest.",
          take="Leaks happen on sites you don’t control. Unique passwords keep them there.",
          time="2 hours for the admin; 30–60 minutes per person",
          pay="A 1Password Business subscription per person",
-         legend="<span>Each pattern is a password.</span>",
          nxt="NEXT: HARDWARE KEY ↓", nxt_id="hardware-keys",
-         aw="An old forum is breached. Theo used the same password everywhere, so the leaked password opens his cloud, payments, code and analytics accounts.",
-         ah="Every site has its own password, kept in 1Password. The leaked password opens only the old forum; the other four stay shut."),
+         aw="An old forum is breached and Theo’s password, Sunset2019!, leaks. He used it everywhere, so it opens his cloud, payments, code and design accounts.",
+         ah="An old forum leaks Theo’s old password, Sunset2019!. His cloud, payments, code and design accounts each have their own random password from 1Password, so the leaked one opens none of them."),
     dict(id="hardware-keys", n=3, sid="s4", meta="WALL 3 OF 7 · OCTOBER", name="Hardware key",
          hook="Maya gets a perfect fake: “Storage full. Sign in to keep your mail.”",
-         cw="The fake page passes her password and her “Yes” straight to Google.",
-         ch="The key checks the address. On the real site it answers. On a look-alike it stays dark.",
-         take="Good people fall for good fakes. A key doesn’t need anyone to spot them.",
+         cw="Her password and her six-digit code are just text. The fake page passes both on.",
+         ch="The fake gets her password. To use it, the stranger needs a key on Maya’s keychain.",
+         take="Anything typed can be passed on. A key has to be in your hand.",
+         what="A six-digit code is just text: a fake page can pass it on, and a code saved beside the password in a vault falls with it. A hardware key stays on your keychain. Its secret can’t be copied, and it answers only the real site.",
          time="2 hours for the admin; 30 minutes per person",
          pay="Two security keys per person (YubiKey 5C NFC)",
          nxt="NEXT: SEPARATE ADMIN ACCOUNTS ↓", nxt_id="admin-split",
-         aw="On a look-alike Google page, Maya types her password and taps Yes on her phone. The fake page passes both to the real Google, and a stranger gets into her mail.",
-         ah="Maya’s key is plugged into her laptop. On the look-alike page she touches it and it stays dark. On the real Google page it lights up and she is signed in."),
+         aw="On a look-alike Google page, Maya types her password and the six-digit code from her app. The page passes both to a stranger, who signs in to her mail.",
+         ah="Maya’s key is plugged into her laptop. The look-alike page passes on her password, but on the wrong site her key stays dark and nothing from it crosses. The stranger is asked to touch a key they don’t have."),
     dict(id="admin-split", n=4, sid="s5", meta="WALL 4 OF 7 · THE SAME OCTOBER EMAIL", name="Separate admin accounts",
          hook="What if that fake had caught the account that runs the company?",
-         cw="Her everyday account was also the top admin. One slip reaches every account.",
-         ch="Admin lives on separate, key-only accounts. Her everyday account can’t change the company.",
+         cw="One account reads mail and runs the company. Catch it, and you catch everything.",
+         ch="Everyday mail lives on <span class=\"addr\">maya@</span>, which holds no admin. Admin lives on <span class=\"addr\">maya-admin@</span>, behind a key.",
+         what="Maya has two accounts. Her everyday one reads mail, opens links and holds no admin, so catching it gets a stranger her inbox, not the company. Her admin one signs in only with her key and does nothing else.",
          take="Keep the power to change everything off the account that clicks links.",
          time="2 hours for the admins; 15 minutes each quarter",
          pay="A Workspace seat per admin account, the spare included, and two keys for the spare",
          nxt="NEXT: ADMIN AUDIT ↓", nxt_id="admin-audit",
-         aw="A fake sign-in catches Maya’s everyday account, which is also the top admin. From there it reaches every account and setting, and new accounts appear.",
-         ah="Maya’s everyday account is caught, but it holds no admin, so it stops at a wall. Admin lives on separate key-only accounts for Maya and Theo, plus a spare with two keys kept in two places and tested quarterly."),
+         aw="Maya has one account, maya@wrenstreet.example, for mail and for running the company. A fake sign-in catches it, and with it her mail, her docs, adding people and changing settings: the whole company.",
+         ah="Maya has two accounts side by side. maya@ reads mail and holds no admin; maya-admin@ only does admin and signs in with a key. A fake sign-in catches maya@ and gets her mail and docs, but stops at the wall. Theo has an admin account too, and a break-glass account has two keys kept in two places."),
     dict(id="admin-audit", n=5, sid="s6", meta="WALL 5 OF 7 · JANUARY", name="Admin audit",
          hook="Priya asks the assistant: who is an admin of what?",
          cw="31 admin seats for nine people, one held by a contractor long gone.",
          ch="The assistant drafts the table. Priya cuts it to two per tool, one at a time.",
          take="Every extra admin is one more account worth stealing.",
+         what="Admin rights pile up: on people who left, and on tools nobody checks. The audit lists who is an admin of every tool, keeps it to the few who need it, and is checked again each quarter.",
          time="2–3 hours for an admin, with the assistant; 30 minutes each quarter",
          pay="Nothing to buy, unless a smaller Google role needs another admin seat",
          legend='<span>● = an admin seat</span>',
@@ -431,6 +486,7 @@ WALLS = [
          cw="The carrier moves his number. Every text-message code now goes to a stranger.",
          ch="No PIN, no move. The number stays put until Theo unlocks it himself.",
          take="A phone number was never meant to prove who you are.",
+         what="A caller who talks your carrier into moving your number gets every text-message code meant for you. A number lock and a SIM lock stop the move. The accounts that matter sign in with keys, not texts, so a number opens nothing.",
          time="30 minutes for an admin; 20–30 minutes per person",
          pay="Nothing to buy: settings on plans people already have",
          nxt="NEXT: AI CONNECTORS ↓", nxt_id="ai-connector-scopes",
@@ -438,16 +494,15 @@ WALLS = [
          ah="The carrier asks for a PIN the caller doesn’t have, and Theo’s number lock and SIM lock keep the number on his phone. His important accounts sign in with keys, not text messages."),
     dict(id="ai-connector-scopes", n=7, sid="s8", meta="WALL 7 OF 7 · MAY", name="AI connectors",
          hook="Priya’s assistant drafts her replies. One email hid a line meant for it.",
-         cw="With access to everything, nothing stops the hidden line. The invoices go out.",
-         ch="It can read and draft. Drive is locked; sending is switched off in the tool.",
+         cw="With access to everything, the assistant follows the hidden line. The invoices go out.",
+         ch="Google locks it out of Drive. A setting in the AI tool stops it sending.",
+         what="Give an assistant only what its job needs: here, reading mail and writing drafts. Google can lock it out of Drive. Gmail has no “drafts only” permission, so “don’t send” is a setting in the AI tool: a rule, not a lock.",
          take="The assistant isn’t the problem. What it can reach is.",
          time="2–3 hours for an admin, with the assistant; 15 minutes per person; 30 minutes each quarter",
          pay="Nothing to buy; some AI tools need a business plan for these settings",
-         legend=('<span class="only-with"><svg viewBox="0 0 8 16" aria-hidden="true"><rect x="1" y="0" width="6" height="16" style="fill:var(--accent)"/></svg>LOCK: Google enforces it</span>'
-                 '<span class="only-with"><svg viewBox="0 0 8 16" aria-hidden="true"><line x1="4" y1="1" x2="4" y2="15" style="stroke:var(--accent);stroke-width:2.5;stroke-dasharray:3.5 2.5"/></svg>RULE: a setting in the AI tool, checked each quarter</span>'),
          nxt="NEXT: THE YEAR ↓", nxt_id="the-year",
-         aw="An email from a “new supplier” hides a line telling Priya’s assistant to send the invoices. The assistant has access to everything, so it takes the invoices from Drive and sends them to an unknown address.",
-         ah="The same hidden line reaches the assistant, but it can only read and draft. Google locks it out of Drive, and the AI tool’s own setting stops it sending. The odd draft waits in Drafts, and Priya deletes it."),
+         aw="An email from a new supplier hides a line telling Priya’s assistant to send the invoices. The assistant can reach everything, so it takes the invoices from Drive and sends them to an unknown address.",
+         ah="The same hidden line reaches the assistant, which can only read and draft. Google locks it out of Drive. A setting in the AI tool, a rule rather than a lock, stops it sending. The invoices stay put."),
 ]
 
 SVGS = {"s2": scenes_a.s2, "s3": scenes_b.s3, "s4": scenes_b.s4, "s5": scenes_c.s5,
@@ -468,10 +523,11 @@ def wall(w):
 <div class="body">
 {stagecol(w["sid"], svg, w["cw"], w["ch"], w["aw"], w["ah"], w.get("legend", ""))}
 <div class="side">
+<p class="what">{w["what"]}</p>
 <p class="takeaway">{w["take"]}</p>
 <dl class="chips"><dt>Time</dt><dd>{w["time"]}</dd><dt>You pay for</dt><dd>{w["pay"]}</dd></dl>
 <a class="modlink" href="{MOD}{w["id"]}.md" aria-label="Read the {w["name"].lower()} module on GitHub">Read the module →</a>
-<a class="next" href="#{w["nxt_id"]}">{w["nxt"]}</a>
+<a class="next" href="#{w["nxt_id"]}">{arr(w["nxt"])}</a>
 </div>
 </div>
 </div>
@@ -510,12 +566,11 @@ def main():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Seven Walls</title>
+{HEAD}
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="The security basics a small team can do itself, told as one year at an invented nine-person company. From Bulkhead Labs.">
 <!--FONTS-->
 <style>
-/* Seven Walls v2. Each scene is one screen: name, hook, animated stage, one caption, one takeaway.
+/* Seven Walls v3. Each scene is one screen: name, hook, animated stage, one caption, one takeaway.
    Motion rule: every element's base CSS is its final pose; animations describe only where it comes from. */
 {BASE_CSS}
 {PAGE_CSS.replace("STAGGER", stagger())}
@@ -551,7 +606,7 @@ def main():
 <p class="lead">A ship doesn’t sink because water gets in. It sinks when nothing stops the water.</p>
 {s0col}
 <p class="after">This is one small company’s year, and the seven walls that held.</p>
-<a class="start" href="#wren-street">MEET WREN STREET ↓</a>
+<a class="start" href="#wren-street">{arr("MEET WREN STREET ↓")}</a>
 </div>
 </div>
 </section>
@@ -576,7 +631,7 @@ def main():
 <div class="words">
 <p class="trigger">Last spring, a fake invoice in Wren Street’s name nearly got paid. So they built seven walls, an afternoon or two each.</p>
 <p class="small">Their AI assistant did the reading. A person did anything that could lock someone out.</p>
-<a class="next" href="#work-email">WALL 1: SIGN IN WITH GOOGLE ↓</a>
+<a class="next" href="#work-email">{arr("WALL 1: SIGN IN WITH GOOGLE ↓")}</a>
 </div>
 </div>
 </div>
@@ -606,7 +661,7 @@ def main():
 <li>A Workspace seat per admin account, the spare included, and two keys for the spare.</li>
 </ul>
 </div>
-<a class="next" href="#build-your-own">NEXT: BUILD YOUR OWN ↓</a>
+<a class="next" href="#build-your-own">{arr("NEXT: BUILD YOUR OWN ↓")}</a>
 </div>
 </div>
 </div>
@@ -641,6 +696,14 @@ def main():
 </body>
 </html>
 '''
+    # Without always runs longer than With: With's sequence may be at most 1500ms longer than Without's.
+    for sid in ["s0"] + [w["sid"] for w in WALLS]:
+        wo, wi = END[sid, "without"], END[sid, "with"]
+        assert wi - wo < 1500, f"{sid}: With runs {wi}ms against Without's {wo}ms"
+        print(f"  {sid}: without {wo}ms, with {wi}ms")
+    for w in WALLS:
+        n = len(w["what"].split())
+        assert n <= 45, f'{w["id"]}: .what has {n} words'
     OUT.write_text(html)
     print("wrote", OUT, len(html))
 

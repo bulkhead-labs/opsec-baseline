@@ -5,32 +5,80 @@
   root.classList.add("js");
   var RM = window.matchMedia("(prefers-reduced-motion: reduce)");
   var reduced = function () { return RM.matches; };
-  var HOLD = 1000;  // ms the Without frame holds before autoplay moves to With
+  var HOVER = window.matchMedia("(hover: hover)");
+  var HOLD = { without: 5000, "with": 3500 };  // ms each state's final frame holds while the stage cycles
+  var RESUME = 1500;                             // the least a hold runs after a pause ends
+  var CYCLES = 3;                                // Without, With, three times; then rest on With
+  var other = function (s) { return s === "with" ? "without" : "with"; };
 
-  // ---------- Stages: Without / With, Replay, autoplay ----------
+  // ---------- Seen: an element at least half in view (or filling half the screen, if it is taller) ----------
+  var TH = [];
+  for (var t = 0; t <= 20; t++) TH.push(t / 20);
+  function seen(el, fn, every) {
+    if (!("IntersectionObserver" in window)) return;
+    var io = new IntersectionObserver(function (es) {
+      var e = es[es.length - 1];
+      var on = e.isIntersecting && (e.intersectionRatio >= 0.5 || e.intersectionRect.height >= window.innerHeight / 2);
+      if (every) fn(on);
+      else if (on) { io.disconnect(); fn(); }
+    }, { threshold: TH });
+    io.observe(el);
+  }
+
+  // ---------- The Next highlight: once the scene has been seen, the way on is lit ----------
+  function ready(sec) {
+    var link = sec && sec.querySelector(".next, .start");
+    if (link) link.classList.add("is-ready");
+  }
+
+  // ---------- Stages: Without / With, the cycle, Pause and Replay ----------
   var COUNTS = { s6: { without: 31, "with": 18 } };
 
   function Stage(fig) {
+    var self = this;
     this.fig = fig;
     this.col = fig.parentNode;
+    this.sec = fig.closest("section");
     this.svg = fig.querySelector("svg");
     this.btns = this.col.querySelectorAll(".seg button");
+    this.ctl = this.col.querySelector(".replay");
+    this.cap = this.col.querySelector(".caption");
     this.caps = { without: this.col.querySelector(".cap-without"), "with": this.col.querySelector(".cap-with") };
-    this.auto = false;
+    this.cycling = false;   // the cycle is running
+    this.stopped = false;   // the reader took control, or the cycle finished: it never starts again
+    this.cycles = 0;        // With holds completed
+    this.phase = "";        // "play" while a sequence runs, "hold" while its final frame holds
+    this.remaining = 0;     // ms left in the current hold
     this.timer = 0;
+    this.why = { hover: false, focus: false, offscreen: false, hidden: document.hidden };  // pause reasons
+    this.shown = {};        // states the reader showed with the buttons
     this.count = fig.querySelector(".cnum");
     this.n = 0;
     this.caps.without.hidden = this.state() !== "without";
     this.caps["with"].hidden = this.state() !== "with";
-    var self = this;
     for (var i = 0; i < this.btns.length; i++) {
-      this.btns[i].addEventListener("click", function () { self.cancel(); self.show(this.getAttribute("data-set"), true); });
+      this.btns[i].addEventListener("click", function () {
+        var s = this.getAttribute("data-set");
+        self.stop();
+        self.shown[s] = true;
+        self.show(s, true);
+      });
     }
-    this.col.querySelector(".replay").addEventListener("click", function () { self.cancel(); self.show(self.state(), true); });
+    this.ctl.addEventListener("click", function () {
+      var cycling = self.cycling;
+      self.stop();
+      if (!cycling) self.show(self.state(), true);  // Replay; a Pause lets the current state finish and hold
+    });
     fig.addEventListener("animationend", function (e) {
       var p = fig.getAttribute("data-play");
       if (p && e.target.classList && e.target.classList.contains("last-" + p)) self.done(p);
     });
+    if (HOVER.matches) {
+      this.col.addEventListener("mouseenter", function () { self.pause("hover", true); });
+      this.col.addEventListener("mouseleave", function () { self.pause("hover", false); });
+    }
+    this.col.addEventListener("focusin", function () { self.pause("focus", true); });
+    this.col.addEventListener("focusout", function (e) { if (!self.col.contains(e.relatedTarget)) self.pause("focus", false); });
     if (this.count) {
       fig.addEventListener("animationstart", function (e) {
         if (!fig.getAttribute("data-play")) return;
@@ -42,7 +90,26 @@
     }
   }
   Stage.prototype.state = function () { return this.fig.getAttribute("data-state"); };
-  Stage.prototype.cancel = function () { this.touched = true; this.auto = false; clearTimeout(this.timer); };
+  // The third button's face, and whether the caption is read out: not while it changes every few seconds.
+  Stage.prototype.face = function () {
+    this.ctl.classList.toggle("is-pause", this.cycling);
+    this.ctl.setAttribute("aria-label", this.cycling ? "Pause" : "Replay");
+    this.cap.setAttribute("aria-live", this.cycling ? "off" : "polite");
+  };
+  Stage.prototype.start = function () {
+    if (reduced() || this.stopped || this.cycling) return;
+    this.cycling = true;
+    this.face();
+    this.show("without", true);
+  };
+  Stage.prototype.stop = function () {
+    this.cycling = false;
+    this.stopped = true;
+    if (this.phase === "hold") this.phase = "";
+    clearTimeout(this.timer);
+    this.timer = 0;
+    this.face();
+  };
   Stage.prototype.show = function (state, animate) {
     var fig = this.fig;
     fig.removeAttribute("data-play");
@@ -61,56 +128,94 @@
       this.count.textContent = String(play ? 0 : COUNTS[fig.id][state]);
     }
     if (play) {
+      this.phase = "play";
       fig.setAttribute("data-play", state);
       fig.classList.add("is-playing");
+    } else {
+      this.played(state);
     }
   };
+  // A sequence reached its last frame.
   Stage.prototype.done = function (state) {
-    var self = this;
     this.fig.removeAttribute("data-play");
     this.fig.classList.remove("is-playing");
     if (this.count) this.count.textContent = String(COUNTS[this.fig.id][state]);
-    if (this.auto && state === "without") {
-      this.timer = setTimeout(function () {
-        if (!self.auto) return;
-        self.auto = false;
-        self.show("with", true);
-      }, HOLD);
-    } else {
-      this.auto = false;
-    }
+    this.played(state);
   };
-  Stage.prototype.autoplay = function () {
-    if (reduced() || this.touched) return;
-    this.auto = true;
-    this.show("without", true);
+  Stage.prototype.played = function (state) {
+    if (this.cycling) {
+      this.phase = "hold";
+      this.remaining = HOLD[state];
+      this.run();
+      return;
+    }
+    this.phase = "";
+    if (this.shown[state] && this.shown.without && this.shown["with"]) ready(this.sec);
+  };
+  // The hold's timer runs only while nothing pauses it.
+  Stage.prototype.run = function () {
+    var w = this.why, self = this;
+    if (!this.cycling || this.phase !== "hold" || this.timer || w.hover || w.focus || w.offscreen || w.hidden) return;
+    this.t0 = Date.now();
+    this.timer = setTimeout(function () { self.timer = 0; self.next(); }, this.remaining);
+  };
+  Stage.prototype.pause = function (why, on) {
+    if (this.why[why] === on) return;
+    this.why[why] = on;
+    if (on) {
+      if (this.timer) { clearTimeout(this.timer); this.timer = 0; this.remaining -= Date.now() - this.t0; }
+      return;
+    }
+    // Back from a pointer or focus: what was left, but at least 1.5s. Back in view: 1.5s.
+    if (this.phase === "hold") this.remaining = (why === "hover" || why === "focus") ? Math.max(this.remaining, RESUME) : RESUME;
+    this.run();
+  };
+  Stage.prototype.next = function () {
+    var s = this.state();
+    if (s === "with") {
+      this.cycles++;
+      if (this.cycles === 1) ready(this.sec);
+      if (this.cycles >= CYCLES) {  // rest on With
+        this.cycling = false;
+        this.stopped = true;
+        this.phase = "";
+        this.face();
+        return;
+      }
+    }
+    this.show(other(s), true);
   };
 
   var stages = {};
   var figs = document.querySelectorAll(".stage");
   for (var i = 0; i < figs.length; i++) stages[figs[i].id] = new Stage(figs[i]);
 
-  // The opening hull plays on load, once the fonts are in or after 300ms.
+  // The opening hull cycles from load, once the fonts are in or after 300ms. Every other stage starts the first
+  // time it is half in view. Out of view, a stage's hold waits.
   var opened = false;
-  function openHull() { if (!opened) { opened = true; stages.s0.autoplay(); } }
+  function openHull() { if (!opened) { opened = true; stages.s0.start(); } }
   setTimeout(openHull, 300);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(openHull);
-
-  // Every other stage plays once, the first time it is 60% in view.
-  var once = function (el, fn) {
-    if (!("IntersectionObserver" in window)) return;
-    var io = new IntersectionObserver(function (es) {
-      for (var k = 0; k < es.length; k++) {
-        if (es[k].isIntersecting) { io.disconnect(); fn(); }
-      }
-    }, { threshold: 0.6 });
-    io.observe(el);
-  };
   Object.keys(stages).forEach(function (id) {
-    if (id !== "s0") once(stages[id].svg, function () { stages[id].autoplay(); });
+    var st = stages[id], first = true;
+    seen(st.svg, function (on) {
+      st.pause("offscreen", !on);
+      if (!on || !first) return;
+      first = false;
+      if (id !== "s0") st.start();
+      if (!reduced()) setTimeout(function () { ready(st.sec); }, 20000);
+    }, true);
   });
+  // Scenes without a stage light their Next 6s after they are seen; under reduced motion, every scene does at 8s.
+  var scenes = document.querySelectorAll("section.scene");
+  Array.prototype.forEach.call(scenes, function (sec) {
+    if (!sec.querySelector(".next, .start")) return;
+    var wait = reduced() ? 8000 : sec.querySelector(".stage") ? 0 : 6000;
+    if (wait) seen(sec, function () { setTimeout(function () { ready(sec); }, wait); });
+  });
+
   var playOnce = function (el, target) {
-    once(el, function () { if (!reduced()) (target || el).classList.add("is-playing"); });
+    seen(el, function () { if (!reduced()) (target || el).classList.add("is-playing"); });
   };
   var dia = document.querySelector(".ws-dia");
   if (dia) playOnce(dia);
@@ -161,6 +266,9 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(land); else window.addEventListener("load", land);
   }
 
-  // ---------- Pause everything while the tab is hidden ----------
-  document.addEventListener("visibilitychange", function () { root.classList.toggle("paused", document.hidden); });
+  // ---------- Pause everything while the tab is hidden: the animations, and every hold's timer ----------
+  document.addEventListener("visibilitychange", function () {
+    root.classList.toggle("paused", document.hidden);
+    Object.keys(stages).forEach(function (id) { stages[id].pause("hidden", document.hidden); });
+  });
 })();

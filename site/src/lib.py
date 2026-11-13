@@ -1,9 +1,12 @@
-"""Helpers for generating the Seven Walls v2 page: SVG shapes and animation CSS."""
+"""Helpers for generating the Seven Walls page: SVG shapes and animation CSS."""
+import re
+
 EO = "cubic-bezier(.2,.7,.2,1)"
 EI = "cubic-bezier(.45,0,.25,1)"
 
 KF = []   # scene keyframes
 CSS = []  # scene CSS (base poses and animation bindings)
+END = {}  # (stage id, state) -> the ms at which that state's sequence ends
 
 
 def css(s):
@@ -18,6 +21,8 @@ def A(sid, state, sel, *anims):
             x, v = x
             vs += v + ";"
         parts.append(x + " backwards")
+        dur, delay = (int(n) for n in re.findall(r"(\d+)ms", x))
+        END[sid, state] = max(END.get((sid, state), 0), dur + delay)
     sels = ",".join(f'#{sid}[data-play="{state}"] {s.strip()}' for s in sel.split(","))
     CSS.append(f"{sels}{{{vs}animation:{','.join(parts)}}}")
 

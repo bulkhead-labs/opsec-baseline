@@ -90,7 +90,8 @@ other services (GitHub, Slack, the cloud account, billing) are for
    Directory > Users > (the admin account) > Admin roles and
    privileges`. If one of them isn't a 1Password owner yet, an owner
    makes them one first, unlocking with a password, not Google
-   (`password-manager` D4). Any other admin account gets the narrower
+   (`password-manager` D4). The new owner then does `password-manager`
+   step 7: an account password, two-factor, and the Emergency Kit. Any other admin account gets the narrower
    role its person needs, as in `admin-audit` D2. A role a daily
    account holds moves to that person's admin account too. Each admin
    then signs in to `admin.google.com` with their admin account and a

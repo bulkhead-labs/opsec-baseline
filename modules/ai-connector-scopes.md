@@ -127,7 +127,7 @@ see that tool's own pricing page.
    1Password?". Propose a narrower one for each: a read-only or
    restricted key, a key for one project, a fine-grained token for
    named repositories, with an expiry. (D5)
-8. **Person, each owner.** Each key's owner makes the narrower key,
+8. **Person, each owner (whoever made each key).** Each one makes the narrower key,
    saves it in 1Password (a shared vault for a team key, their private
    vault for their own), switches the tool to it, then revokes the old
    one, and deletes every other copy: chats, documents, notes, files in

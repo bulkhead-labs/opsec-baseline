@@ -25,7 +25,7 @@ types them, while a security key answers only the real site.
 |---|---|---|
 | YubiKey 5C NFC | Two keys per person: one on the keychain, one stored at home | |
 | Setup | | 2 hours for the admin, spread over two weeks |
-| Per person | | 30 minutes to register both keys in Google, 1Password and anything else that takes them |
+| Per person | | 30 minutes to register both keys in Google, in 1Password for the owners, and anything else that takes them |
 
 If `admin-split` comes next, order two more keys now for its break-glass
 account. For the current price, see Yubico's product page (Sources).
@@ -48,8 +48,9 @@ include security keys, so no seat or plan changes.
 - **D5.** Every 1Password owner has both keys added as two-factor
   authentication on their 1Password account. This finishes
   `password-manager` D4.
-- **D6.** Every other 1Password member has both keys added too, or the
-  checklist says why not.
+- **D6.** Every other 1Password member unlocks 1Password with Google
+  (`password-manager` D4), so the keys on their Google account guard
+  their vaults too. They add no key in 1Password.
 - **D7.** The domain registrar and the DNS host have the keys of each
   person who signs in to them, where they support security keys. Where
   one doesn't, the checklist says so, and two-step stays on an
@@ -96,11 +97,11 @@ include security keys, so no seat or plan changes.
    until an admin helps them (the lost-key list), so don't skip the
    check. (D4)
 7. **Person.** In 1Password, as an owner: `Policies > Authentication
-   policy > Manage`, and check that security keys are allowed. (D5, D6)
-8. **Person, each one.** Add both keys to your 1Password account:
+   policy > Manage`, and check that security keys are allowed. (D5)
+8. **Person, each owner.** Add both keys to your 1Password account:
    1Password.com > your name > Manage Account > More Actions > Manage
    Two-Factor Authentication > Add a Security Key. Do it once per key.
-   Owners first. (D5, D6)
+   Everyone else unlocks with Google and has nothing to add. (D5, D6)
 9. **Agent.** For the registrar and the DNS host on the `work-email`
    inventory, look up on the vendor's own help pages whether it accepts
    security keys (also called WebAuthn, FIDO2 or passkeys), and how many.
@@ -133,22 +134,25 @@ include security keys, so no seat or plan changes.
   well as hardware keys. A person who also saves a passkey on their phone
   or laptop can sign in with it. That is still phishing-resistant, but
   the check is two hardware keys, so record the hardware keys.
-- **1Password can't require keys only.** It asks for the second factor
-  only on a new device, and an authenticator app stays allowed. Say so;
-  the keys are still worth adding.
+- **1Password can't require keys only** for the owners. It asks for the
+  second factor only on a new device, and an authenticator app stays
+  allowed. Say so; the keys are still worth adding.
 - **Services that use Google sign-in need nothing more.** They inherit
   the key through Google. Don't add keys to other services in this
   module; note any that ask.
 - **When a key is lost**, the list says:
   1. Sign in with the other key. Remove the lost one from Google (`2-Step
-     Verification` settings), 1Password, the registrar and the DNS host.
+     Verification` settings), 1Password (owners only), the registrar and
+     the DNS host.
   2. Order a replacement. Register it everywhere, and make it the new
      spare.
   3. Both keys lost: an admin generates backup codes in `Admin console >
      Directory > Users > (the person) > Security > 2-Step Verification >
      Get backup verification codes`, and gives them to the person on a
      call or in person, after recognizing them. Never on the word of an
-     email or a chat message. In 1Password, an owner recovers the account.
+     email or a chat message. Members are back in 1Password once they
+     can sign in to Google. For an owner, another owner recovers the
+     1Password account.
 - **Security codes stay off** unless someone must sign in on a machine
   where a key can't reach the browser, such as a remote desktop. Then
   name the need, apply "Allow security codes with remote access" only to
@@ -165,7 +169,7 @@ include security keys, so no seat or plan changes.
 | D3 | The group or unit name, its 2-Step Verification method, the grace period, the security code setting, the date |
 | D4 | The same settings at the top level, and any named exception with the reason and who agreed |
 | D5 | For each owner: their yes that both keys are added, with the date |
-| D6 | For each member: done, or why not |
+| D6 | That `password-manager` D4 is done: Unlock with SSO on for everyone but the owners, and the date |
 | D7 | For the registrar and the DNS host: keys added and by whom, or "no key support" with the help page checked |
 | D8 | Where the lost-key list is kept |
 

@@ -6,11 +6,11 @@ In dependency order. A plan's prompt names modules by id.
 |---|---|---|---|
 | `work-email` | [Work email, and sign in with Google](work-email.md) | | Written |
 | `password-manager` | [Password manager](password-manager.md) | `work-email` | Written |
-| `hardware-keys` | Hardware keys | `password-manager` | Planned |
-| `admin-split` | Super admin split | `hardware-keys` | Planned |
-| `admin-audit` | Least-privilege admin audit | `admin-split` | Planned |
-| `phone-sim` | Phone and SIM hardening | `password-manager` | Planned |
-| `ai-connector-scopes` | AI connector scopes | `work-email` | Planned |
+| `hardware-keys` | [Hardware keys](hardware-keys.md) | `password-manager` | Written |
+| `admin-split` | [Separate admin accounts](admin-split.md) | `hardware-keys` | Written |
+| `admin-audit` | [Least-privilege admin audit](admin-audit.md) | `admin-split` | Written |
+| `phone-sim` | [Phone and SIM hardening](phone-sim.md) | `password-manager` | Written |
+| `ai-connector-scopes` | [AI connector scopes](ai-connector-scopes.md) | `work-email` | Written |
 
-The planned ids and dependencies may still change until `v0.1` is
-tagged. After that they are fixed.
+Ids and check numbers may still change until `v0.1` is tagged. After
+that they are fixed.

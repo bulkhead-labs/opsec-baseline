@@ -34,7 +34,7 @@ many accounts. For the current seat price, see Google's pricing page
 
 This module covers the Google Workspace admin console. Admin rights in
 other services (GitHub, Slack, the cloud account, billing) are for
-`admin-audit`.
+`admin-audit` D3.
 
 ## What done looks like
 

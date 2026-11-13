@@ -53,7 +53,8 @@ enforce two-factor for everyone (D4). Business is the default.
   and the domain registrar.
 - **D7.** Every service the `work-email` inventory marks `password` has
   its login in 1Password, with a unique generated password. Shared logins
-  live in a shared vault, not in a chat, a document or a browser.
+  live in a shared vault, not in a chat, a document or a browser. This
+  finishes `work-email` D3.
 - **D8.** The company's recovery codes (Google Workspace admins, the
   domain registrar, the DNS host, the admin or billing login of each
   core service) are in the restricted vault. Each person's own recovery
@@ -121,7 +122,7 @@ enforce two-factor for everyone (D4). Business is the default.
   inventory and from what people tell you.
 - **Never ask for a password or a code**, not even to check it works.
   Ask "is it saved in the vault?" and record the answer.
-- **Owners and recovery come first** (steps 1 to 7), before anyone moves
+- **Owners and recovery come first** (steps 1 to 6), before anyone moves
   a password in. A vault with one owner and no recovery is one forgotten
   password from gone.
 - **Two-step codes for shared logins** (a shared social account, a
@@ -146,7 +147,7 @@ enforce two-factor for everyone (D4). Business is the default.
 | D5 | Each person's yes, with the date. Not the kit |
 | D6 | The vault names and who can see each one |
 | D7 | For each `password` service: the vault it's in, and the date the password was changed |
-| D8 | For each set on the step 11 list: "in the restricted vault" or "in the owner's private vault", "other copies deleted", who confirmed, the date |
+| D8 | For each set on the step 11 list: "in the restricted vault" or "in the person's own private vault", "other copies deleted", who confirmed, the date |
 | D9 | Each person's yes, with the date |
 
 ## Variants
@@ -156,7 +157,8 @@ enforce two-factor for everyone (D4). Business is the default.
 Use Bitwarden only if the team must host its password manager on its
 own servers. The checks are the same. Bitwarden's names: organizations
 for the account, collections for vaults, and account recovery
-administration for D3.
+administration for D3. Announce the two-step login policy a week before
+turning it on: it cuts off members who haven't set it up.
 
 Bitwarden Enterprise, $6 per person per month on an annual plan, is
 needed even in Bitwarden's cloud: its pricing page puts account

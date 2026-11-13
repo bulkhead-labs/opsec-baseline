@@ -87,7 +87,7 @@ ask for it. The free "Sign in with Google" button is enough.
      Reporting > Audit and investigation > OAuth log events`, with the
      date range widened from its default of the last week, and `Admin
      console > Security > Access and data control > API controls >
-     Manage Third-Party App Access > Accessed apps`;
+     Manage App Access > Accessed apps`;
    - each person's own list at `myaccount.google.com/connections`;
    - the card and invoice statements of the last twelve months;
    - asking each person what they use for work, including what each

@@ -5,7 +5,7 @@ summary: One line for the index.
 depends_on: []
 applies_to: [google-workspace, microsoft-365]
 default: Vendor and plan
-cost: $X per person per month
+cost: What is paid for (no prices)
 time: X hours for the admin, X minutes per person
 checked: YYYY-MM-DD
 ---
@@ -23,7 +23,7 @@ One sentence: what goes wrong without this.
 | One-off | | |
 | Per person | | |
 
-What it depends on. Prices checked YYYY-MM-DD; sources below.
+What it depends on. For prices, the vendor's pricing page (Sources).
 
 ## What done looks like
 

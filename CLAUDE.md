@@ -22,9 +22,10 @@ and the modules you are touching before doing anything.
    anything or administer users or devices.
 4. **One answer per module.** Name one default vendor. Add a fallback only
    for a specific need, and name the need.
-5. **Prices and vendor facts carry a date and a source.** Primary sources
-   (the vendor's own pricing and help pages) only. Update `checked:` in
-   the front matter whenever you re-check.
+5. **No prices.** They go stale. Say what the team pays for (a seat per
+   person, two keys per person) and link the vendor's pricing page.
+   Vendor facts and console paths carry a source: the vendor's own help
+   pages only. Update `checked:` whenever you re-check them.
 6. **Ids are stable.** A module's `id` and its check numbers (`D1`, ...)
    never change once a tag contains them. Teams' plans name them.
 7. **Tags are fixed.** Never move or delete a tag. A change after a tag
@@ -52,5 +53,4 @@ and the modules you are touching before doing anything.
   without guessing, and without touching a secret?). Then search the
   diff for names, addresses and anything that looks like a client.
 - **Style:** short sentences, plain words, no scare words. Console paths
-  in the form `Admin console > Security > ...`. US dollars, per person
-  per month, annual billing, unless said otherwise.
+  in the form `Admin console > Security > ...`.

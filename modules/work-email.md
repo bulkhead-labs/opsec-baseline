@@ -5,7 +5,7 @@ summary: Everyone works from a company account, and signs in to every service th
 depends_on: []
 applies_to: [google-workspace, microsoft-365]
 default: Google Workspace Business Starter
-cost: $7 per person per month (Google Workspace Business Starter, annual plan)
+cost: A Google Workspace Business Starter seat per person
 time: Half a day for the admin; 30 minutes per person
 checked: 2026-11-12
 ---
@@ -22,7 +22,7 @@ when someone leaves there is no single place to take their access back.
 
 | | Cost | Time |
 |---|---|---|
-| Google Workspace Business Starter | $7 per person per month on the annual plan, $8.40 on the flexible (monthly) plan; up to 300 people | |
+| Google Workspace Business Starter | A seat per person, for up to 300 people | |
 | Shared addresses (`hello@`, `billing@`) | Free, as Google Groups | 10 minutes each |
 | Email authentication (SPF, DKIM, DMARC) | Free | 1 hour, then a two-week wait |
 | The service inventory and moving sign-ins | Free | 2-3 hours for the admin, with the agent |
@@ -30,7 +30,8 @@ when someone leaves there is no single place to take their access back.
 
 Already on Google Workspace: this module costs time only. Not yet on it:
 add the seats, and an afternoon to move mail (Google's own migration
-tool does it). Prices checked 2026-11-12; sources below.
+tool does it). For the current price, see Google's pricing page
+(Sources).
 
 Some services charge more for single sign-on (SAML). This module doesn't
 ask for it. The free "Sign in with Google" button is enough.
@@ -200,8 +201,7 @@ The same checks apply, with Microsoft's names:
   Policies & rules > Threat policies > Email authentication settings >
   DKIM`.
 
-Microsoft 365 Business Basic costs $7.00 per person per month, the US
-list price since July 1, 2026 (checked 2026-11-12).
+Microsoft 365 Business Basic covers every check here.
 
 ## Why this default
 
@@ -223,12 +223,11 @@ list price since July 1, 2026 (checked 2026-11-12).
 
 All checked 2026-11-12.
 
-- [Google Workspace pricing](https://workspace.google.com/pricing): Business Starter $7 annual, $8.40 flexible; Business Standard $14 and $16.80.
+- [Google Workspace pricing](https://workspace.google.com/pricing): current prices.
 - [Business editions](https://knowledge.workspace.google.com/admin/getting-started/editions/business-editions): at most 300 users.
 - [Compare Business editions](https://knowledge.workspace.google.com/admin/getting-started/editions/compare-business-editions): 2-Step Verification, security keys and Google as a SAML identity provider are all in Business Starter.
 - [Deploy 2-Step Verification](https://knowledge.workspace.google.com/admin/security/deploy-2-step-verification): enforcement, allowed methods, "Only security key" covers passkeys too.
 - [Control which apps access Google Workspace data](https://knowledge.workspace.google.com/admin/apps/control-which-apps-access-google-workspace-data): "Sign in with Google" for third-party apps.
 - [Set up DKIM](https://knowledge.workspace.google.com/admin/security/set-up-dkim): `Apps > Google Workspace > Gmail > Authenticate email`, 2048-bit keys.
 - [Email sender guidelines](https://support.google.com/a/answer/81126): all senders need SPF or DKIM; senders of more than 5,000 messages a day also need DMARC. This module asks for all three whatever the volume.
-- [Microsoft 365 pricing updates, 2026](https://www.microsoft.com/en-us/licensing/news/2026-m365-packaging-pricing-updates): Business Basic $7.00 from July 1, 2026.
 - [Security defaults](https://learn.microsoft.com/en-us/entra/fundamentals/security-defaults): free in every Microsoft 365 organization, on by default in those created after October 2019.

@@ -6,7 +6,7 @@ depends_on: [work-email]
 applies_to: [any]
 default: 1Password Business
 fallback: Bitwarden Enterprise, only if the team must host it itself
-cost: $8.99 per person per month (1Password Business, billed yearly)
+cost: A 1Password Business subscription per person
 time: 2 hours for the admin; 30-60 minutes per person
 checked: 2026-11-12
 ---
@@ -24,16 +24,11 @@ account the company has.
 
 | | Cost | Time |
 |---|---|---|
-| 1Password Business | $8.99 per person per month, billed yearly | 2 hours for the admin to set up |
+| 1Password Business | A subscription per person | 2 hours for the admin to set up |
 | Per person | Included: a free 1Password Families account for home | 30-60 minutes to move their passwords in |
 
-No hardware needed. Prices checked 2026-11-12; sources below.
-
-A team of ten or fewer can start on the 1Password Teams Starter Pack:
-$24.95 a month for ten people, billed yearly, with up to ten more seats
-at $4.99 each. It doesn't include the free family accounts. Before
-choosing it, check in 1Password's current help pages that it can
-enforce two-factor for everyone (D4). Business is the default.
+No hardware needed. For the current price, see 1Password's pricing page
+(Sources).
 
 ## What done looks like
 
@@ -160,10 +155,9 @@ for the account, collections for vaults, and account recovery
 administration for D3. Announce the two-step login policy a week before
 turning it on: it cuts off members who haven't set it up.
 
-Bitwarden Enterprise, $6 per person per month on an annual plan, is
-needed even in Bitwarden's cloud: its pricing page puts account
-recovery (D3) and the policies behind D4 on Enterprise only, and
-self-hosting too. Teams, at $4, has none of them (checked 2026-11-12).
+It needs Bitwarden Enterprise, even in Bitwarden's cloud: account
+recovery (D3), the policies behind D4, and self-hosting are on
+Enterprise only. Bitwarden Teams has none of them (checked 2026-11-12).
 
 ## Why this default
 
@@ -185,11 +179,11 @@ self-hosting too. Teams, at $4, has none of them (checked 2026-11-12).
 
 All checked 2026-11-12.
 
-- [1Password business pricing](https://1password.com/business-pricing): Business $8.99 per person per month billed yearly, with a free Families account per member; Teams Starter Pack $24.95 a month for ten, up to ten more seats at $4.99, without Families.
+- [1Password business pricing](https://1password.com/business-pricing): current prices; Business includes a free Families account per member.
 - [Recover accounts for team members](https://support.1password.com/recovery/): owners, administrators and groups with the "Recover Accounts" permission; have at least two.
 - [Emergency Kit](https://support.1password.com/emergency-kit/): what it holds.
 - [Manage two-factor authentication](https://support.1password.com/manage-two-factor-authentication/): enforcing two-factor for everyone needs the Strict password policy.
 - [Two-factor authentication](https://support.1password.com/two-factor-authentication/): authenticator app, security key or Duo.
 - [Passkeys](https://support.1password.com/save-use-passkeys/) and [one-time passwords](https://support.1password.com/one-time-passwords/).
 - [Unlock with SSO and Google](https://support.1password.com/sso-configure-google/).
-- [Bitwarden business pricing](https://bitwarden.com/pricing/business/): Teams $4, Enterprise $6; account recovery, policies and self-hosting on Enterprise only.
+- [Bitwarden business pricing](https://bitwarden.com/pricing/business/): current prices; account recovery, policies and self-hosting on Enterprise only.

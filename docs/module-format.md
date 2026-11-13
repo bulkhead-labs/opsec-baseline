@@ -23,9 +23,9 @@ depends_on: [work-email]      # ids of modules to finish first
 applies_to: [any]
 default: 1Password Business   # the one vendor we name
 fallback: Bitwarden Enterprise # only where a specific need calls for it, else omit
-cost: $8.99 per person per month   # the short form; details in the body
+cost: A 1Password Business subscription per person   # what is paid for, never a price
 time: 2 hours for the admin; 30-60 minutes per person
-checked: 2026-11-12           # when the prices and vendor facts were last checked
+checked: 2026-11-12           # when the vendor facts and console paths were last checked
 ---
 ```
 
@@ -37,24 +37,24 @@ checked: 2026-11-12           # when the prices and vendor facts were last check
   way.
 - **`applies_to`** names the platforms the steps cover. The values in use:
   `google-workspace`, `microsoft-365`, `any`.
-- **`cost`** is real money. A module that needs hardware or a paid tier
-  says so here, and is never called free.
-- **`checked`** is the date of the newest price or vendor fact in the
-  module. Every price in the body carries its own date and source too.
+- **`cost`** names what is paid for, never a price. A module that needs
+  hardware or a paid tier says so here, and is never called free.
+- **`checked`** is the date the vendor facts and console paths were
+  last checked against the vendor's own pages.
 
 ## Sections, in this order
 
 | Section | For | What goes in it |
 |---|---|---|
 | **The attack** | the founder | One sentence: what goes wrong without this fix. Real attacks, no scare words. |
-| **Cost and time** | the founder | Money per person and in total, time for the admin and for each person, and anything it depends on (a key to buy, a paid tier). Dated. |
+| **Cost and time** | the founder | What is paid for (a seat per person, two keys per person), time for the admin and for each person, and anything it depends on. No prices. |
 | **What done looks like** | both | Numbered checks anyone can verify: `D1`, `D2`, ... |
 | **Steps** | both | Numbered steps, each with an owner (below), each pointing at the checks it satisfies. |
 | **Agent instructions** | the agent | What to read and inventory first, what to propose, where to stop, what never to do. |
 | **Evidence** | the checklist | For each check, what the agent records to show it's done. Never a secret. |
 | **Variants** | both | Another platform, or the fallback vendor, and when to use it. Optional. |
 | **Why this default** | the founder | Why we name this vendor and this setting, and what is given up. Short. |
-| **Sources** | anyone | Vendor pages behind each price and fact, with the date checked. |
+| **Sources** | anyone | Vendor pages behind each fact, and the pricing page, with the date checked. |
 
 ### Owners
 
@@ -105,9 +105,9 @@ When in doubt, a step belongs to a person.
 - **One answer.** Name one default vendor and one setting. Add a fallback
   only for a specific need (the team must self-host, the team is already
   on another platform) and say what the need is.
-- **Prices with dates.** Every price says when and where it was checked.
-  Use list prices in US dollars, per person per month, annual billing,
-  unless the module says otherwise.
+- **No prices.** They go stale. Say what is paid for (a seat per
+  person, a subscription, two keys per person) and link the vendor's
+  pricing page in Sources.
 - **Guidance only.** Modules tell the team how. They never say Bulkhead
   Labs, or anyone outside the team, will log in, buy, or administer.
 - **Agent-agnostic.** Plain markdown. No syntax tied to one vendor's

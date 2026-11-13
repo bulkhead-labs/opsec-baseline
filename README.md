@@ -23,12 +23,12 @@ checklist. A person does anything that could lock someone out.
 
 Roughly in dependency order. Each module names the ones it needs first.
 
-| | Module | Fixes | Cost |
+| | Module | Fixes | You pay for |
 |---|---|---|---|
-| 1 | [Work email, and sign in with Google](modules/work-email.md) | Personal accounts, a password per tool, nowhere to shut the door when someone leaves | $7 per person per month |
-| 2 | [Password manager](modules/password-manager.md) | Reused and shared passwords, recovery codes on sticky notes | $8.99 per person per month |
+| 1 | [Work email, and sign in with Google](modules/work-email.md) | Personal accounts, a password per tool, nowhere to shut the door when someone leaves | A Workspace seat per person |
+| 2 | [Password manager](modules/password-manager.md) | Reused and shared passwords, recovery codes on sticky notes | A 1Password seat per person |
 | 3 | Hardware keys ([#2](https://github.com/bulkhead-labs/opsec-baseline/issues/2)) | Sign-in that can be phished | Two keys per person |
-| 4 | Super admin split ([#3](https://github.com/bulkhead-labs/opsec-baseline/issues/3)) | Daily accounts that can change everything | One more Workspace seat per admin, $7 a month; the keys from 3 |
+| 4 | Super admin split ([#3](https://github.com/bulkhead-labs/opsec-baseline/issues/3)) | Daily accounts that can change everything | One more Workspace seat per admin; the keys from 3 |
 | 5 | Least-privilege admin audit ([#4](https://github.com/bulkhead-labs/opsec-baseline/issues/4)) | Standing admin nobody needs | Time only |
 | 6 | Phone and SIM hardening ([#5](https://github.com/bulkhead-labs/opsec-baseline/issues/5)) | SIM swaps and port-outs | Time only |
 | 7 | The data-flow map ([#6](https://github.com/bulkhead-labs/opsec-baseline/issues/6)) | Not knowing where data goes, or who can touch it | Time only |
@@ -76,8 +76,9 @@ like" list is your checklist.
   acts. Nobody outside your team needs to log in to anything.
 - **Not a security review.** It covers the basics most small teams skip.
   It doesn't look at your product, your code or your infrastructure.
-- **No warranty.** Vendors change their consoles and their prices. Each
-  module says when it was last checked.
+- **No warranty.** Vendors change their consoles. Each module says when
+  it was last checked. Modules name what you pay for, not the price:
+  prices change too often, so check the vendor's page.
 
 ## Licence and credit
 

@@ -45,6 +45,8 @@ BASE_CSS = r'''
   --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   /* Tints are literal rgba, never color-mix: a fill animated toward a color-mix() value flashes yellow in Chromium. */
   --bad-tint: rgba(180, 35, 90, .16); --ok-tint: rgba(30, 122, 70, .16); --accent-tint: rgba(236, 90, 32, .16);
+  /* Light: a narrower, stronger bar, so it reads orange, never the peach-pink of the crimson tint. */
+  --hl: rgba(236, 90, 32, .74); --hl-top: 64%; --ring0: rgba(236, 90, 32, .55); --ring1: rgba(236, 90, 32, 0);
   --key-dark: #2A1A12; --key-lit: #FFFFFF; --key-glow: rgba(255, 196, 160, .9);
   --ease-out: cubic-bezier(.2, .7, .2, 1);
   --ease-inout: cubic-bezier(.45, 0, .25, 1);
@@ -58,6 +60,7 @@ BASE_CSS = r'''
     --text: #E8EBEE; --muted: #9AA3AB; --line: #2E353C; --rule: #E8EBEE;
     --accent: #FF6B35; --accent-ink: #FF8A5C; --ok: #4CC07E; --bad: #F06A8A;
     --bad-tint: rgba(240, 106, 138, .16); --ok-tint: rgba(76, 192, 126, .16); --accent-tint: rgba(255, 107, 53, .16);
+    --hl: rgba(255, 107, 53, .45); --hl-top: 58%; --ring0: rgba(255, 107, 53, .6); --ring1: rgba(255, 107, 53, 0);
     color-scheme: dark;
   }
 }
@@ -66,6 +69,7 @@ BASE_CSS = r'''
   --text: #E8EBEE; --muted: #9AA3AB; --line: #2E353C; --rule: #E8EBEE;
   --accent: #FF6B35; --accent-ink: #FF8A5C; --ok: #4CC07E; --bad: #F06A8A;
   --bad-tint: rgba(240, 106, 138, .16); --ok-tint: rgba(76, 192, 126, .16); --accent-tint: rgba(255, 107, 53, .16);
+  --hl: rgba(255, 107, 53, .45); --hl-top: 58%; --ring0: rgba(255, 107, 53, .6); --ring1: rgba(255, 107, 53, 0);
   color-scheme: dark;
 }
 
@@ -77,7 +81,8 @@ html { -webkit-text-size-adjust: 100%; scroll-snap-type: y proximity; scroll-pad
 @media (prefers-reduced-motion: reduce) { html { scroll-snap-type: y proximity; } }
 /* Without JS, snapping fights the browser's own jump to an anchor and lands past it: no snapping then. */
 html.no-js { scroll-snap-type: none; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--f-body); font-size: 1.0625rem; line-height: 1.5; overflow-x: clip; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--f-body); font-size: 1.125rem; line-height: 1.5; overflow-x: clip; }
+@media (min-width: 64rem) { body { font-size: 1.25rem; } }
 p, h1, h2, h3, figure, dl, dd, ol { margin: 0; }
 a { color: inherit; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
 a:hover { color: var(--accent-ink); }
@@ -85,24 +90,24 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .scene {
   min-height: 100vh; min-height: 100svh; scroll-snap-align: start;
-  display: grid; align-content: center;
+  display: grid; align-content: center; grid-template-columns: minmax(0, 1fr);
   padding: 56px var(--gutter-r) 16px var(--gutter-l);
 }
 .wrap { width: 100%; max-width: 72rem; margin: 0 auto; }
 @media (min-width: 64rem) { .scene { padding: 64px 32px 20px; } }
 
-.meta { font-family: var(--f-mono); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent-ink); }
+.meta { font-family: var(--f-mono); font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent-ink); }
 .name {
   font-family: var(--f-head); font-weight: 800; text-transform: uppercase; line-height: .9;
-  font-size: clamp(3rem, 11vw, 6.5rem); letter-spacing: .005em; text-wrap: balance; hyphens: manual;
+  font-size: clamp(3rem, 11vw, 5.75rem); letter-spacing: .005em; text-wrap: balance; hyphens: manual;
 }
-.hook { font-size: 1.125rem; line-height: 1.4; max-width: 34ch; }
+.hook { font-size: 1.1875rem; line-height: 1.4; max-width: 36ch; }
 .head { display: flex; flex-direction: column; gap: 12px; }
-.takeaway { font-weight: 700; font-size: 1.1875rem; line-height: 1.3; max-width: 30ch; }
-@media (min-width: 40rem) { .hook { font-size: 1.25rem; } .takeaway { font-size: 1.375rem; } }
+.takeaway { font-weight: 700; font-size: 1.25rem; line-height: 1.3; max-width: 30ch; }
+@media (min-width: 40rem) { .hook { font-size: 1.375rem; } .takeaway { font-size: 1.5rem; } }
 
 .next, .back {
-  font-family: var(--f-mono); font-size: 13px; text-transform: uppercase; letter-spacing: .06em;
+  font-family: var(--f-mono); font-size: 15px; text-transform: uppercase; letter-spacing: .06em;
   color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; align-self: flex-start;
 }
 .next:hover, .back:hover { color: var(--text); }
@@ -115,7 +120,14 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 @media (prefers-reduced-motion: reduce) { .next, .start { transition: none; } .is-ready .arr { animation: none; } }
 
 /* What the wall does: plain sentences, the same in every mode. */
-.what { font-size: 1.0625rem; line-height: 1.5; color: var(--text); max-width: 40ch; }
+.what { font-size: 1.125rem; line-height: 1.45; color: var(--text); max-width: 38ch; }
+@media (min-width: 64rem) { .what { font-size: 1.25rem; } }
+/* Key phrases are bold. Only the opening phrase of the right column sits on the orange highlighter bar: one per wall.
+   The text keeps --text, so contrast holds in both themes. */
+.kb { font-weight: 700; }
+.k { font-weight: 700; background: linear-gradient(transparent var(--hl-top), var(--hl) var(--hl-top), var(--hl) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone; padding: 0 .12em; margin: 0 -.12em; }
+@media (forced-colors: active) { .k { background: none; text-decoration: underline; } }
 .addr { font-family: var(--f-mono); font-size: .9em; letter-spacing: 0; white-space: nowrap; }
 
 /* ---------- The hull bar ---------- */
@@ -137,7 +149,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .hullnav a:focus-visible { outline: none; }
 .hullnav a:focus-visible .c, .hullnav a:focus-visible .bow { stroke: var(--accent); stroke-width: 2.5; }
 .hullnav a:hover .c, .hullnav a:hover .bow { stroke: var(--text); }
-.hb-label { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); white-space: nowrap; }
+.hb-label { font-family: var(--f-mono); font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); white-space: nowrap; }
 .hb-name { display: none; }
 @media (min-width: 40rem) { .hb-name { display: inline; } }
 .hullbar.is-wren .hb-name { display: inline; }
@@ -158,22 +170,21 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 /* ---------- The stage ---------- */
 .stage { display: flex; flex-direction: column; gap: 8px; width: 100%; }
 .stage svg { display: block; width: 100%; height: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: inset 0 4px 0 var(--sc, var(--ok)); transition: box-shadow 250ms linear; }
-/* Phones: the stage runs edge to edge and no SVG label is under 13 units. */
+/* Phones: the stage runs edge to edge. No SVG label is under 14 units anywhere. */
 @media (max-width: 40rem) {
   .stage > svg { width: calc(100% + var(--gutter-l) + var(--gutter-r)); max-width: none; margin-left: calc(-1 * var(--gutter-l)); border-left: 0; border-right: 0; border-radius: 0; }
-  .stage .f11, .stage .f12, .stage .gch { font-size: 13px !important; }
   .stage svg text { letter-spacing: .01em; }
 }
 .stage[data-state="without"] { --sc: var(--bad); }
 .stage[data-state="with"] { --sc: var(--ok); }
-.state-tag { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.state-tag { font-family: var(--f-mono); font-size: 14px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 .state-tag::before { content: ""; width: 8px; height: 8px; background: var(--sc); }
 .state-tag .st-without { color: var(--bad); }
 .state-tag .st-with { color: var(--ok); }
 .stage[data-state="with"] .st-without, .stage[data-state="without"] .st-with { display: none; }
 .stage[data-state="with"] .only-without, .stage[data-state="without"] .only-with { display: none; }
 .stage[data-state="with"] .legend .only-without, .stage[data-state="without"] .legend .only-with { display: inline; visibility: hidden; }
-.legend { font-family: var(--f-mono); font-size: 12px; color: var(--muted); letter-spacing: .02em; display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center; }
+.legend { font-family: var(--f-mono); font-size: 14px; color: var(--muted); letter-spacing: .02em; display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center; }
 .legend .gl { display: inline-grid; place-items: center; width: 16px; height: 16px; border: 1.5px solid var(--text); border-radius: 50%; font: 700 10px/1 var(--f-body); color: var(--text); margin-right: 4px; vertical-align: -3px; }
 .stage .legend svg { display: inline-block; width: 8px; height: 16px; vertical-align: -3px; margin-right: 6px; background: none; border: 0; border-radius: 0; box-shadow: none; }
 
@@ -182,13 +193,23 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .seg { display: flex; gap: 6px; min-width: 0; }
 .control button {
   min-height: 44px; border: 1.5px solid var(--line); border-radius: 4px; background: transparent; color: var(--muted);
-  font: 600 15px/1.1 var(--f-body); padding: 0 10px; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; white-space: nowrap;
+  font: 600 17px/1.1 var(--f-body); padding: 0 12px; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; white-space: nowrap;
 }
 .control button:hover { color: var(--text); }
 .seg .dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; flex: none; }
-.seg .b-without[aria-pressed="true"] { border-color: var(--bad); color: var(--bad); }
-.seg .b-with[aria-pressed="true"] { border-color: var(--ok); color: var(--ok); }
+/* Pressed: outline, tint and coloured text. Only a pressed button has a fill. */
+.seg .b-without[aria-pressed="true"] { border-color: var(--bad); color: var(--bad); background: var(--bad-tint); }
+.seg .b-with[aria-pressed="true"] { border-color: var(--ok); color: var(--ok); background: var(--ok-tint); }
 .seg [aria-pressed="true"] .dot { background: currentColor; }
+.seg .go { display: none; width: 14px; margin: 0 -3px; font: 700 15px/1 var(--f-body); color: var(--accent-ink); justify-content: center; flex: none; }
+/* The invitation: a few seconds into Without, With gets an orange outline, a pulsing ring and an arrow for its dot.
+   No fill and the text stays grey, so it never looks more "on" than the pressed button. Three beats, then still. */
+.seg .b-with { transition: border-color 300ms linear, background-color 300ms linear, color 300ms linear; }
+.seg .b-with.is-invite { border-color: var(--accent); animation: invite 1100ms var(--ease-inout) 3; }
+.seg .b-with.is-invite .dot { display: none; }
+.seg .b-with.is-invite .go { display: inline-flex; }
+@keyframes invite { 0% { box-shadow: 0 0 0 0 var(--ring0); } 100% { box-shadow: 0 0 0 9px var(--ring1); } }
+@media (prefers-reduced-motion: reduce) { .seg .b-with { transition: none; } .seg .b-with.is-invite { animation: none; } }
 .replay { margin-left: auto; }
 /* The third button: Pause while the stage cycles, Replay otherwise. Both faces share one grid cell, so the button
    keeps one size and swapping faces moves nothing. */
@@ -199,13 +220,17 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .replay .bars { display: block; width: 10px; height: 12px; fill: currentColor; }
 .replay .glyph { font-size: 18px; line-height: 1; }
 .btn-short { display: none; }
-@media (max-width: 40rem) { .replay .rl { display: none; } .replay { width: 44px; justify-content: center; padding: 0; } }
-@media (max-width: 359px) { .btn-long { display: none; } .btn-short { display: inline; } }
+@media (max-width: 40rem) {
+  .replay .rl { display: none; } .replay { width: 44px; justify-content: center; padding: 0; }
+  .control button { font-size: 16px; padding: 0 9px; gap: 6px; }
+}
+@media (max-width: 379px) { .btn-long { display: none; } .btn-short { display: inline; } }
 .no-js .control { display: none; }
 @media (prefers-reduced-motion: reduce) { .control .replay { display: none; } }
 
 /* ---------- Caption ---------- */
-.caption { display: flex; flex-direction: column; gap: 8px; font-size: 1.0625rem; line-height: 1.4; }
+.caption { display: flex; flex-direction: column; gap: 8px; font-size: 1.125rem; line-height: 1.4; }
+@media (min-width: 64rem) { .caption { font-size: 1.1875rem; } }
 .cap { display: block; padding-left: 12px; border-left: 3px solid var(--ok); }
 .cap-without { border-left-color: var(--bad); }
 .cap[hidden] { display: none; }
@@ -213,29 +238,31 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .js .caption { display: grid; }
 .js .caption .cap { grid-area: 1 / 1; }
 .js .caption .cap[hidden] { display: block; visibility: hidden; }
-.cap-tag { display: block; font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; font-weight: 600; }
+.cap-tag { display: block; font-family: var(--f-mono); font-size: 14px; letter-spacing: .06em; font-weight: 600; }
 .cap-without .cap-tag { color: var(--bad); }
 .cap-with .cap-tag { color: var(--ok); }
 .js .cap-tag { display: none; }
 
 /* ---------- Chips ---------- */
 .chips { display: grid; grid-template-columns: 1fr; gap: 2px 16px; background: var(--sunk); border-radius: 4px; padding: 12px 14px; }
-.chips dt { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding-top: 2px; }
-.chips dd { font-size: 15px; line-height: 1.4; margin-bottom: 8px; }
+.chips dt { font-family: var(--f-mono); font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding-top: 2px; }
+.chips dd { font-size: 16px; line-height: 1.4; margin-bottom: 6px; }
+@media (min-width: 64rem) { .chips dd { font-size: 17px; } }
 .chips dd:last-child { margin-bottom: 0; }
 @media (min-width: 64rem) { .chips { grid-template-columns: max-content 1fr; } .chips dd { margin-bottom: 0; } }
-.modlink { font-weight: 600; font-size: 15px; align-self: flex-start; display: inline-flex; align-items: center; min-height: 32px; }
+.modlink { font-weight: 600; font-size: 17px; align-self: flex-start; display: inline-flex; align-items: center; min-height: 32px; }
 
 /* ---------- SVG drawing conventions ---------- */
 .stage svg *, .dia * { transform-box: fill-box; transform-origin: center; }
-.stage :where(text), .ws-dia :where(text), .tok64 :where(text) { font-family: var(--f-mono); font-size: 14px; letter-spacing: .04em; fill: var(--text); }
-.stage .f11 { font-size: 12px; } .stage .f12 { font-size: 12px; } .stage .f13 { font-size: 13px; } .stage .f14 { font-size: 14px; }
-.stage .say { font-family: var(--f-body); letter-spacing: 0; font-size: 15px; }
-.stage .say.f13 { font-size: 13px; } .stage .say.f14 { font-size: 14px; }
+.stage :where(text), .ws-dia :where(text), .tok64 :where(text) { font-family: var(--f-mono); font-size: 15px; letter-spacing: .02em; fill: var(--text); }
+.stage .f11, .stage .f12 { font-size: 14px; } .stage .f13 { font-size: 15px; } .stage .f14 { font-size: 16px; }
+.stage .say { font-family: var(--f-body); letter-spacing: 0; font-size: 16px; }
+.stage .say.f13 { font-size: 14px; } .stage .say.f14 { font-size: 15px; }
 .stage .say.b { font-weight: 700; }
+.stage .ls0 { letter-spacing: 0; }
 .stage .mu { fill: var(--muted); } .stage .bd { fill: var(--bad); } .stage .okc { fill: var(--ok); }
 text.ini, .stage text.ini, .tok64 text.ini { font-family: var(--f-head); font-weight: 800; letter-spacing: 0; fill: var(--text); }
-.gch { font-family: var(--f-body) !important; font-weight: 700; font-size: 12px !important; letter-spacing: 0 !important; }
+.gch { font-family: var(--f-body) !important; font-weight: 700; font-size: 14px !important; letter-spacing: 0 !important; }
 .obj { fill: var(--bg); stroke: var(--text); stroke-width: 2; }
 .ln { fill: none; stroke: var(--text); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .thin { stroke: var(--line); stroke-width: 1.5; }
@@ -284,20 +311,22 @@ PAGE_CSS = r'''
 .top .logo { display: block; width: 150px; }
 .top .logo svg { display: block; width: 100%; height: auto; }
 .top nav { display: flex; gap: 4px 20px; flex-wrap: wrap; }
-.top nav a { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; }
+.top nav a { font-family: var(--f-mono); font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; }
 .top nav a:hover { color: var(--text); }
 .opening.scene { padding-top: 16px; align-content: stretch; }
 .no-js .opening.scene { padding-top: 56px; }
 .opening .wrap { min-height: calc(100svh - 44px); gap: 12px; }
 .open-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
-.eyebrow { font-family: var(--f-mono); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.eyebrow { font-family: var(--f-mono); font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+@media (min-width: 40rem) { .eyebrow { font-size: 15px; letter-spacing: .06em; } }
 .title { font-family: var(--f-stencil); font-weight: 900; text-transform: uppercase; font-size: clamp(4rem, 16vw, 9rem); line-height: .86; letter-spacing: .01em; }
-.lead { font-size: 1.25rem; line-height: 1.35; max-width: 30ch; }
-@media (min-width: 40rem) { .lead { font-size: 1.375rem; } }
+.lead { font-size: 1.375rem; line-height: 1.35; max-width: 30ch; }
+@media (min-width: 40rem) { .lead { font-size: 1.5rem; } }
 .opening .stagecol { max-width: 640px; margin-top: 6px; }
-.after { font-size: 1.125rem; color: var(--muted); max-width: 40ch; }
+.after { font-size: 1.1875rem; color: var(--muted); max-width: 40ch; }
+@media (min-width: 64rem) { .after { font-size: 1.25rem; } }
 .start {
-  align-self: flex-start; font-family: var(--f-mono); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600;
+  align-self: flex-start; font-family: var(--f-mono); font-size: 15px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600;
   text-decoration: none; border: 1.5px solid var(--text); border-radius: 4px; padding: 0 16px; min-height: 44px; display: inline-flex; align-items: center;
 }
 .start:hover, .start.is-ready { border-color: var(--accent); }
@@ -309,22 +338,22 @@ PAGE_CSS = r'''
 .tok64 { width: 48px; height: 48px; }
 .tok64 .obj { stroke-width: 2.5; }
 .cast .cn { font-family: var(--f-head); font-weight: 800; font-size: 1.5rem; text-transform: uppercase; line-height: 1; }
-.cast .cr { font-size: 14px; line-height: 1.35; color: var(--muted); }
+.cast .cr { font-size: 16px; line-height: 1.35; color: var(--muted); }
 @media (min-width: 64rem) {
   .cast { gap: 32px; }
   .cast li { border-top: 1px solid var(--line); padding-top: 14px; display: grid; grid-template-columns: 64px 1fr; column-gap: 14px; align-items: center; }
   .tok64 { width: 64px; height: 64px; grid-row: span 2; }
   .cast .cn { font-size: 1.75rem; align-self: end; }
-  .cast .cr { font-size: 15px; align-self: start; }
+  .cast .cr { font-size: 18px; align-self: start; }
 }
 .ws-dia { display: block; width: 100%; max-width: 560px; height: auto; }
 .ws-dot { fill: var(--muted); }
 .ws-t { fill: none; stroke: var(--line); stroke-width: 1.5; }
 .ws-dia .obj { stroke-width: 2; }
 .ws-dia text.ini { font-size: 11px; }
-.trigger { font-size: 1.1875rem; line-height: 1.4; max-width: 34ch; }
-@media (min-width: 40rem) { .trigger { font-size: 1.25rem; } }
-.small { font-size: 1rem; color: var(--muted); max-width: 40ch; }
+.trigger { font-size: 1.25rem; line-height: 1.4; max-width: 34ch; }
+@media (min-width: 40rem) { .trigger { font-size: 1.375rem; } }
+.small { font-size: 1.125rem; color: var(--muted); max-width: 40ch; }
 .wren .wrap { display: flex; flex-direction: column; gap: 18px; }
 @media (min-width: 64rem) {
   .wren .two { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: 48px; align-items: center; }
@@ -340,8 +369,8 @@ PAGE_CSS = r'''
 .year .grid { display: flex; flex-direction: column; gap: 20px; }
 @media (min-width: 64rem) { .year .grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: start; } }
 .year .left { display: flex; flex-direction: column; gap: 16px; }
-.year .line { font-size: 1.1875rem; line-height: 1.4; max-width: 34ch; }
-@media (min-width: 40rem) { .year .line { font-size: 1.25rem; } }
+.year .line { font-size: 1.25rem; line-height: 1.4; max-width: 34ch; }
+@media (min-width: 40rem) { .year .line { font-size: 1.375rem; } }
 .year .hull { display: block; width: 100%; max-width: 560px; height: auto; }
 .hull .c { fill: none; stroke: var(--line); stroke-width: 1.5; }
 .hull .c.done { fill: var(--text); stroke: var(--text); }
@@ -352,14 +381,15 @@ PAGE_CSS = r'''
 .ledger li { border-bottom: 1px solid var(--line); }
 .ledger a { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); grid-template-areas: "m w" "m h"; column-gap: 12px; padding: 8px 0; text-decoration: none; }
 .ledger a:hover .lh { color: var(--accent-ink); }
-.ledger .lm { grid-area: m; font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; color: var(--accent-ink); padding-top: 3px; }
-.ledger .lw { grid-area: w; font-size: 16px; line-height: 1.3; }
+.ledger .lm { grid-area: m; font-family: var(--f-mono); font-size: 14px; letter-spacing: .06em; color: var(--accent-ink); padding-top: 3px; }
+.ledger .lw { grid-area: w; font-size: 17px; line-height: 1.3; }
 .ledger .lh { grid-area: h; font-family: var(--f-head); font-weight: 800; font-size: 1.25rem; text-transform: uppercase; line-height: 1.1; }
 @media (min-width: 64rem) {
   .ledger a { grid-template-columns: 6rem minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "m w h"; align-items: baseline; padding: 9px 0; }
+  .ledger .lw { font-size: 18px; } .ledger .lh { font-size: 1.375rem; }
 }
-.costs h3 { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
-.costs ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 3px; font-size: 15px; line-height: 1.4; }
+.costs h3 { font-family: var(--f-mono); font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
+.costs ul { margin: 0; padding-left: 1.1rem; display: flex; flex-direction: column; gap: 3px; font-size: 17px; line-height: 1.4; }
 .year.is-playing .hull .c { animation: yfill 250ms linear backwards; }
 .year.is-playing .ledger li { animation: rowin 250ms var(--ease-out) backwards; }
 .year.is-playing .hull .bow { animation: yfill 250ms linear 1260ms backwards; }
@@ -375,9 +405,9 @@ STAGGER
 @media (min-width: 48rem) { .ways { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; } }
 .ways > div { border-top: 2px solid var(--text); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
 .ways > div.us { border-top-color: var(--accent); }
-.ways .wl { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.ways .wl { font-family: var(--f-mono); font-size: 14px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
 .ways a { font-weight: 600; align-self: flex-start; min-height: 32px; display: inline-flex; align-items: center; }
-footer { border-top: 1px solid var(--line); padding-top: 16px; margin-top: 12px; color: var(--muted); font-size: 14px; display: flex; flex-direction: column; gap: 8px; }
+footer { border-top: 1px solid var(--line); padding-top: 16px; margin-top: 12px; color: var(--muted); font-size: 16px; display: flex; flex-direction: column; gap: 8px; }
 footer .logo { display: block; width: 140px; margin-top: 6px; }
 footer .logo svg { display: block; width: 100%; height: auto; }
 '''
@@ -402,7 +432,7 @@ def control():
     return '''<div class="control">
 <div class="seg" role="group" aria-label="Compare">
 <button type="button" class="b-without" data-set="without" aria-pressed="false"><span class="dot" aria-hidden="true"></span><span class="btn-long">Without the wall</span><span class="btn-short">Without</span></button>
-<button type="button" class="b-with" data-set="with" aria-pressed="true"><span class="dot" aria-hidden="true"></span><span class="btn-long">With the wall</span><span class="btn-short">With</span></button>
+<button type="button" class="b-with" data-set="with" aria-pressed="true"><span class="dot" aria-hidden="true"></span><span class="go" aria-hidden="true">→</span><span class="btn-long">With the wall</span><span class="btn-short">With</span></button>
 </div>
 <button type="button" class="replay" aria-label="Replay"><span class="face f-replay" aria-hidden="true"><span class="glyph">↻</span><span class="rl">Replay</span></span><span class="face f-pause" aria-hidden="true"><svg class="bars" viewBox="0 0 10 12"><rect x="0" y="0" width="3" height="12"/><rect x="7" y="0" width="3" height="12"/></svg><span class="rl">Pause</span></span></button>
 </div>'''
@@ -426,10 +456,10 @@ def stagecol(sid, svg, cap_without, cap_with, alt_without, alt_with, legend=""):
 WALLS = [
     dict(id="work-email", n=1, sid="s2", meta="WALL 1 OF 7 · JUNE", name="Sign in with Google",
          hook="Friday is the sales lead’s last day. Priya does the offboarding.",
-         cw="Tools signed up with a personal email stay open after they leave.",
-         ch="One switch closes most doors. A short list closes the rest.",
-         take="You can’t take back access the company never handed out.",
-         what="Everyone signs in to every tool with their company Google account. When someone leaves, turning off that one account stops them signing in anywhere. A short list closes the few tools that keep them signed in.",
+         cw="[[Three tools stay open.]] They were signed up with a personal email.",
+         ch="[[One switch closes most doors.]] A short list closes the rest.",
+         take="You can’t take back access [[the company never handed out]].",
+         what="[[Turn off one account.]] When everyone signs in to every tool with their company Google account, that one switch stops a leaver signing in anywhere. A short list closes the few tools that keep them signed in.",
          time="Half a day for the admin; 30 minutes per person",
          pay="A Google Workspace Business Starter seat per person",
          legend='<span><span class="gl" aria-hidden="true">G</span>= signs in with Google</span><span>••• = its own password</span>',
@@ -438,10 +468,10 @@ WALLS = [
          ah="Every tool signs in with the company account. Priya turns it off, ticks two tools on a short offboarding list, and the sales lead leaves with nothing still open."),
     dict(id="password-manager", n=2, sid="s3", meta="WALL 2 OF 7 · AUGUST", name="Password manager",
          hook="A cycling forum Theo forgot about was breached. His old password leaked.",
-         cw="The same password, Sunset2019!, on every site. One leak opens them all.",
-         ch="A different random password on each site. The leak opens only the old forum.",
-         what="A password manager makes a long, random password for every site and fills it in for you. When one site leaks, that password opens nothing else. Theo remembers one password; 1Password remembers the rest.",
-         take="Leaks happen on sites you don’t control. Unique passwords keep them there.",
+         cw="[[Sunset2019! on every site.]] One leak opens them all.",
+         ch="[[A different random password on each site.]] The leak opens only the old forum.",
+         what="[[A different password for every site.]] 1Password makes each one long and random, and fills it in. When one site leaks, that password opens nothing else. Theo remembers one password; 1Password remembers the rest.",
+         take="Leaks happen on sites you don’t control. [[Unique passwords keep them there.]]",
          time="2 hours for the admin; 30–60 minutes per person",
          pay="A 1Password Business subscription per person",
          nxt="NEXT: HARDWARE KEY ↓", nxt_id="hardware-keys",
@@ -449,10 +479,10 @@ WALLS = [
          ah="An old forum leaks Theo’s old password, Sunset2019!. His cloud, payments, code and design accounts each have their own random password from 1Password, so the leaked one opens none of them."),
     dict(id="hardware-keys", n=3, sid="s4", meta="WALL 3 OF 7 · OCTOBER", name="Hardware key",
          hook="Maya gets a perfect fake: “Storage full. Sign in to keep your mail.”",
-         cw="Her password and her six-digit code are just text. The fake page passes both on.",
-         ch="The fake gets her password. To use it, the stranger needs a key on Maya’s keychain.",
-         take="Anything typed can be passed on. A key has to be in your hand.",
-         what="A six-digit code is just text: a fake page can pass it on, and a code saved beside the password in a vault falls with it. A hardware key stays on your keychain. Its secret can’t be copied, and it answers only the real site.",
+         cw="[[Password and code are just text.]] The fake page passes both on.",
+         ch="[[The stranger needs her key.]] The fake gets her password, but the key stays on Maya’s keychain.",
+         take="Anything typed can be passed on. [[A key has to be in your hand.]]",
+         what="[[The key never leaves your hand.]] A six-digit code is just text: a fake page can pass it on, and a code kept in the vault falls with the password. A key’s secret can’t be copied, and it answers only the real site.",
          time="2 hours for the admin; 30 minutes per person",
          pay="Two security keys per person (YubiKey 5C NFC)",
          nxt="NEXT: SEPARATE ADMIN ACCOUNTS ↓", nxt_id="admin-split",
@@ -460,10 +490,10 @@ WALLS = [
          ah="Maya’s key is plugged into her laptop. The look-alike page passes on her password, but on the wrong site her key stays dark and nothing from it crosses. The stranger is asked to touch a key they don’t have."),
     dict(id="admin-split", n=4, sid="s5", meta="WALL 4 OF 7 · THE SAME OCTOBER EMAIL", name="Separate admin accounts",
          hook="What if that fake had caught the account that runs the company?",
-         cw="One account reads mail and runs the company. Catch it, and you catch everything.",
-         ch="Everyday mail lives on <span class=\"addr\">maya@</span>, which holds no admin. Admin lives on <span class=\"addr\">maya-admin@</span>, behind a key.",
-         what="Maya has two accounts. Her everyday one reads mail, opens links and holds no admin, so catching it gets a stranger her inbox, not the company. Her admin one signs in only with her key and does nothing else.",
-         take="Keep the power to change everything off the account that clicks links.",
+         cw="[[One account does everything.]] Catch it, and you catch the company.",
+         ch="[[<span class=\"addr\">maya@</span> holds no admin.]] Admin lives on <span class=\"addr\">maya-admin@</span>, behind a key.",
+         what="[[Two accounts, two jobs.]] Maya’s everyday account reads mail and holds no admin, so catching it gets a stranger her inbox, not the company. Her admin account signs in only with her key and does nothing else.",
+         take="Keep the power to change everything [[off the account that clicks links]].",
          time="2 hours for the admins; 15 minutes each quarter",
          pay="A Workspace seat per admin account, the spare included, and two keys for the spare",
          nxt="NEXT: ADMIN AUDIT ↓", nxt_id="admin-audit",
@@ -471,10 +501,10 @@ WALLS = [
          ah="Maya has two accounts side by side. maya@ reads mail and holds no admin; maya-admin@ only does admin and signs in with a key. A fake sign-in catches maya@ and gets her mail and docs, but stops at the wall. Theo has an admin account too, and a break-glass account has two keys kept in two places."),
     dict(id="admin-audit", n=5, sid="s6", meta="WALL 5 OF 7 · JANUARY", name="Admin audit",
          hook="Priya asks the assistant: who is an admin of what?",
-         cw="31 admin seats for nine people, one held by a contractor long gone.",
-         ch="The assistant drafts the table. Priya cuts it to two per tool, one at a time.",
-         take="Every extra admin is one more account worth stealing.",
-         what="Admin rights pile up: on people who left, and on tools nobody checks. The audit lists who is an admin of every tool, keeps it to the few who need it, and is checked again each quarter.",
+         cw="[[31 admin seats for nine people.]] One is held by a contractor long gone.",
+         ch="[[Two admins per tool.]] The assistant drafts the table; Priya cuts it, one seat at a time.",
+         take="[[Every extra admin]] is one more account worth stealing.",
+         what="[[List every admin, then cut.]] Admin rights pile up, on people who left and on tools nobody checks. The audit keeps each role to the few who need it, and is checked again each quarter.",
          time="2–3 hours for an admin, with the assistant; 30 minutes each quarter",
          pay="Nothing to buy, unless a smaller Google role needs another admin seat",
          legend='<span>● = an admin seat</span>',
@@ -483,33 +513,41 @@ WALLS = [
          ah="The assistant builds the table of 31 admin seats. Priya removes them one at a time, the ex-contractor’s first, down to two per tool, and books the next review for April."),
     dict(id="phone-sim", n=6, sid="s7", meta="WALL 6 OF 7 · MARCH", name="Phone number lock",
          hook="A caller tells Theo’s carrier: “I lost my phone. Move my number.”",
-         cw="The carrier moves his number. Every text-message code now goes to a stranger.",
-         ch="No PIN, no move. The number stays put until Theo unlocks it himself.",
-         take="A phone number was never meant to prove who you are.",
-         what="A caller who talks your carrier into moving your number gets every text-message code meant for you. A number lock and a SIM lock stop the move. The accounts that matter sign in with keys, not texts, so a number opens nothing.",
+         cw="[[His number moves to a stranger.]] So does every text-message code.",
+         ch="[[No PIN, no move.]] The number stays put until Theo unlocks it himself.",
+         take="A phone number was [[never meant to prove who you are]].",
+         what="[[Lock your number at the carrier.]] A caller who talks your carrier into moving it gets every text-message code meant for you. A number lock and a SIM lock stop the move. Accounts that matter sign in with keys, not texts.",
          time="30 minutes for an admin; 20–30 minutes per person",
          pay="Nothing to buy: settings on plans people already have",
          nxt="NEXT: AI CONNECTORS ↓", nxt_id="ai-connector-scopes",
          aw="A caller talks Theo’s carrier into moving his number to a new SIM. Theo’s phone loses service, and text-message codes for his accounts go to the stranger.",
          ah="The carrier asks for a PIN the caller doesn’t have, and Theo’s number lock and SIM lock keep the number on his phone. His important accounts sign in with keys, not text messages."),
     dict(id="ai-connector-scopes", n=7, sid="s8", meta="WALL 7 OF 7 · MAY", name="AI connectors",
-         hook="Priya’s assistant drafts her replies. One email hid a line meant for it.",
-         cw="With access to everything, the assistant follows the hidden line. The invoices go out.",
-         ch="Google locks it out of Drive. A setting in the AI tool stops it sending.",
-         what="Give an assistant only what its job needs: here, reading mail and writing drafts. Google can lock it out of Drive. Gmail has no “drafts only” permission, so “don’t send” is a setting in the AI tool: a rule, not a lock.",
-         take="The assistant isn’t the problem. What it can reach is.",
+         hook="Priya’s assistant drafts her replies. One email hid an instruction for it.",
+         cw="[[It does what the hidden text says.]] With access to everything, it sends out every clinic’s records.",
+         ch="[[Google locks it out of Drive.]] [[A rule in the AI tool]] stops it sending.",
+         what="[[Give it only what its job needs.]] An assistant acts on what it reads, hidden text included: prompt injection. Google can lock it out of Drive. Gmail has no “drafts only” permission, so “don’t send” is a rule in the AI tool, not a lock.",
+         take="The assistant isn’t the problem. [[What it can reach is.]]",
          time="2–3 hours for an admin, with the assistant; 15 minutes per person; 30 minutes each quarter",
          pay="Nothing to buy; some AI tools need a business plan for these settings",
          nxt="NEXT: THE YEAR ↓", nxt_id="the-year",
-         aw="An email from a new supplier hides a line telling Priya’s assistant to send the invoices. The assistant can reach everything, so it takes the invoices from Drive and sends them to an unknown address.",
-         ah="The same hidden line reaches the assistant, which can only read and draft. Google locks it out of Drive. A setting in the AI tool, a rule rather than a lock, stops it sending. The invoices stay put."),
+         aw="An email from a new supplier hides an instruction in white text: reply with the full customer list. Priya’s assistant can reach everything, so it takes every clinic’s contacts and records from Drive and sends them to an unknown address.",
+         ah="The same hidden instruction reaches the assistant, which can only read and draft. Google locks it out of Drive, where the customer list lives. A setting in the AI tool, a rule rather than a lock, stops it sending. The customer list stays put."),
 ]
 
 SVGS = {"s2": scenes_a.s2, "s3": scenes_b.s3, "s4": scenes_b.s4, "s5": scenes_c.s5,
         "s6": scenes_c.s6, "s7": scenes_d.s7, "s8": scenes_d.s8}
 
 
+def key(s, bar=False):
+    """[[phrase]] marks a key phrase: bold. Only the opening phrase of the right column (bar=True) sits on the
+    orange highlighter bar, so a reader sees one bar per wall."""
+    cls = "k" if bar else "kb"
+    return s.replace("[[", f'<strong class="{cls}">').replace("]]", "</strong>")
+
+
 def wall(w):
+    w = {k: key(v, k == "what") if k in ("what", "cw", "ch", "take") else v for k, v in w.items()}
     svg = SVGS[w["sid"]]()
     return f'''
 <!-- ======================= Wall {w["n"]}: {w["name"]} ======================= -->
@@ -570,7 +608,7 @@ def main():
 <meta name="claude:viewport-fit-sides" content="cover">
 <!--FONTS-->
 <style>
-/* Seven Walls v3. Each scene is one screen: name, hook, animated stage, one caption, one takeaway.
+/* Seven Walls v4. Each scene is one screen: name, hook, animated stage, one caption, one takeaway.
    Motion rule: every element's base CSS is its final pose; animations describe only where it comes from. */
 {BASE_CSS}
 {PAGE_CSS.replace("STAGGER", stagger())}
@@ -703,7 +741,11 @@ def main():
         print(f"  {sid}: without {wo}ms, with {wi}ms")
     for w in WALLS:
         n = len(w["what"].split())
+        for f in ("what", "cw", "ch", "take"):
+            assert w[f].count("[[") == w[f].count("]]") >= 1, f'{w["id"]}: {f} needs a key phrase'
+            assert w[f].count("[[") <= 2, f'{w["id"]}: {f} has more than two key phrases'
         assert n <= 45, f'{w["id"]}: .what has {n} words'
+        assert w["what"].startswith("[[") and w["what"].count("[[") == 1, f'{w["id"]}: one bar, on the opening phrase'
     OUT.write_text(html)
     print("wrote", OUT, len(html))
 

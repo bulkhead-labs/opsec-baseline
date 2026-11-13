@@ -15,19 +15,19 @@ def s3():
     for i, ((n, pw), y) in enumerate(zip(SITES, YS3)):
         last = " last-without" if i == 3 else ""
         rows.append(
-            f'<g class="s3-t s3-t{i}"><rect class="obj box{last}" x="176" y="{y}" width="212" height="40" rx="6"/>'
-            f'{text(186, y + 25, n, "f12")}'
-            f'<rect class="s3-pill" x="258" y="{y + 10}" width="100" height="20" rx="4"/>'
-            f'{text(263, y + 25, LEAK, "f13 s3-pw only-without")}{text(263, y + 25, pw, "f13 only-with")}</g>')
-    checks = "".join(check(374, y + 20, 9, f"s3-ck s3-ck{i} only-with") for i, y in enumerate(YS3))
+            f'<g class="s3-t s3-t{i}"><rect class="obj box{last}" x="172" y="{y}" width="220" height="40" rx="6"/>'
+            f'{text(180, y + 25, n, "f12 ls0")}'
+            f'<rect class="s3-pill" x="256" y="{y + 10}" width="102" height="20" rx="4"/>'
+            f'{text(261, y + 25, LEAK, "f12 ls0 s3-pw only-without")}{text(261, y + 25, pw, "f12 ls0 only-with")}</g>')
+    checks = "".join(check(376, y + 20, 9, f"s3-ck s3-ck{i} only-with") for i, y in enumerate(YS3))
     # The safe's lines fan from one point on its right edge to each row's left edge.
-    vlines = "".join(f'<line class="thin" x1="144" y1="196" x2="176" y2="{y + 20}"/>' for y in YS3)
+    vlines = "".join(f'<line class="thin" x1="144" y1="196" x2="172" y2="{y + 20}"/>' for y in YS3)
     # The leaked chip is drawn at its final place, above DESIGN; the sequences move it in from the forum.
     cy = YS3[3] - 19
     svg = f'''<svg viewBox="0 0 400 300" role="img" aria-labelledby="s3-alt-with">
 <g class="s3-forum"><rect class="obj box" x="12" y="40" width="148" height="60" rx="6"/>
 {text(22, 62, "OLD FORUM", "f13")}
-<rect class="s3-pill" x="18" y="70" width="104" height="20" rx="4"/>{text(24, 85, LEAK, "f13")}</g>
+<rect class="s3-pill" x="18" y="70" width="104" height="20" rx="4"/>{text(24, 85, LEAK, "f12 ls0")}</g>
 <path class="crack s3-crack" pathLength="1" d="M128 100 L134 88 L141 94 L147 78 L153 84 L160 66"/>
 {text(12, 118, "BREACHED", "f12 bd s3-br")}
 {token(28, 170, 14, "T")}{text(12, 200, "THEO", "f12")}
@@ -39,9 +39,9 @@ def s3():
 {"".join(rows)}
 {checks}
 <g class="s3-leak last-with"><g class="s3-chip">
-<rect class="s3-lchip" x="258" y="{cy}" width="100" height="18" rx="4"/>
-{text(263, cy + 13, LEAK, "f13 bd")}
-{text(252, cy + 13, "LEAKED", "f12 bd", "end")}</g></g>
+<rect class="s3-lchip" x="256" y="{cy}" width="102" height="18" rx="4"/>
+{text(261, cy + 13, LEAK, "f12 ls0 bd")}
+{text(250, cy + 13, "LEAKED", "f12 bd", "end")}</g></g>
 </svg>'''
     css('''.s3-pill{fill:var(--sunk);stroke:transparent;stroke-width:1.5}
 .s3-lchip{fill:var(--surface);stroke:var(--bad);stroke-width:1.5}
@@ -54,7 +54,7 @@ def s3():
     KF.append("@keyframes s3pill{from{stroke:transparent}}")
     # The chip's stops, as offsets from its final place above DESIGN. It pops in the gap above the forum
     # (LEAKED, 6 units to its left, would leave the stage if it sat on the forum's own pill).
-    FORUM = (-202, -180)
+    FORUM = (-200, -180)
     above = [(0, y - YS3[3]) for y in YS3]
     tr = lambda p: f"transform:translate({p[0]}px,{p[1]}px);opacity:1;animation-timing-function:{EI}"
 
@@ -124,9 +124,9 @@ def s4():
 <path class="topbar" d="M9 82 a5 5 0 0 1 5 -5 h172 a5 5 0 0 1 5 5 v20 h-182 Z"/>
 <path class="obj" d="M2 196 H198 L190 206 H10 Z"/>
 <rect class="port" x="178" y="198" width="10" height="5"/>
-<rect class="pill" x="14" y="82" width="172" height="16" rx="6"/>
-<text class="f12 s4-addr" x="19" y="94">goog1e-login.example</text>
-<line class="s4-ul only-without last-without" pathLength="1" x1="19" y1="98" x2="66" y2="98"/>
+<rect class="pill" x="12" y="82" width="178" height="16" rx="6"/>
+<text class="f12 ls0 s4-addr" x="16" y="94">goog1e.example</text>
+<line class="s4-ul only-without last-without" pathLength="1" x1="16" y1="98" x2="66" y2="98"/>
 <text class="say b" x="18" y="120">Sign in</text>
 <rect class="field" x="18" y="128" width="120" height="18" rx="3"/>
 <text class="say f13 mu s4-ph1" x="24" y="141">Password</text>
@@ -181,7 +181,6 @@ def s4():
 .finger{opacity:0}
 .nail{fill:none;stroke:var(--surface);stroke-width:1.2;opacity:.7}
 #s4 .rot{transform-box:view-box;transform-origin:0 0}
-@media (max-width:40rem){#s4 .s4-addr{letter-spacing:0}}
 .s4-mk{opacity:0}''')
     KF.append("@keyframes tin{from{fill-opacity:0}}")
     pk = lambda t0, t1: steps(f"s4pk{t0}", [

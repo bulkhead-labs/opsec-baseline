@@ -9,10 +9,10 @@ RY = [136, 158, 180, 202]
 
 
 def card(x, local, roles, can, cls, under=""):
-    """An account card at (x, 36), 172 x 184. roles: [(text, only-class)]; can: per state, which rows it can do."""
+    """An account card at (x, 36), 176 x 184. roles: [(text, only-class)]; can: per state, which rows it can do."""
     head = (f'{text(x + 12, 62, local, "f16")}{text(x + 12, 80, DOMAIN, "f12 mu s5-dom")}'
             + "".join(text(x + 12, 102, r, "f12 " + c) for r, c in roles)
-            + f'<line class="thin" x1="{x + 12}" y1="114" x2="{x + 160}" y2="114"/>')
+            + f'<line class="thin" x1="{x + 12}" y1="114" x2="{x + 164}" y2="114"/>')
     rows = ""
     for i, (label, y) in enumerate(zip(ROWS5, RY)):
         for st, rows_can in can.items():
@@ -20,33 +20,33 @@ def card(x, local, roles, can, cls, under=""):
             mark = (f'<rect class="m-can" x="{x + 14}" y="{y - 8}" width="8" height="8"/>' if on
                     else f'<rect class="m-not" x="{x + 13}" y="{y - 5}" width="10" height="2"/>')
             rows += f'<g class="only-{st}">{mark}{text(x + 30, y, label, "f12" + ("" if on else " mu"))}</g>'
-    return f'<g class="{cls}"><rect class="obj card5" x="{x}" y="36" width="172" height="184" rx="6"/>{under}{head}{rows}</g>'
+    return f'<g class="{cls}"><rect class="obj card5" x="{x}" y="36" width="176" height="184" rx="6"/>{under}{head}{rows}</g>'
 
 
 def s5():
     sid = "s5"
-    bands = "".join(f'<rect class="band5 s5-b{i}{" only-without" if i >= 2 else ""}" x="12" y="{y - 14}" width="164" height="20"/>'
+    bands = "".join(f'<rect class="band5 s5-b{i}{" only-without" if i >= 2 else ""}" x="10" y="{y - 14}" width="168" height="20"/>'
                     for i, y in enumerate(RY))
-    a_card = card(8, "maya@", [("EVERYDAY + ADMIN", "only-without"), ("EVERYDAY", "only-with")],
+    a_card = card(6, "maya@", [("EVERYDAY + ADMIN", "only-without"), ("EVERYDAY", "only-with")],
                   {"without": {0, 1, 2, 3}, "with": {0, 1}}, "s5-a", bands)
-    b_card = card(220, "maya-admin@", [("ADMIN ONLY", "")], {"with": {2, 3}}, "s5-bc only-with")
+    b_card = card(218, "maya-admin@", [("ADMIN ONLY", "")], {"with": {2, 3}}, "s5-bc only-with")
     svg = f'''<svg viewBox="0 0 400 300" role="img" aria-labelledby="s5-alt-with">
 {a_card}
 <line class="atk s5-atk" x1="94" y1="8" x2="94" y2="36"/>
-<g class="only-without"><rect class="ph5" x="220" y="36" width="172" height="184" rx="6"/>
+<g class="only-without"><rect class="ph5" x="218" y="36" width="176" height="184" rx="6"/>
 {text(306, 124, "NO ADMIN", "f12 mu", "middle")}{text(306, 142, "ACCOUNT", "f12 mu", "middle")}
 {text(8, 250, "THE WHOLE COMPANY", "f13 bd s5-whole last-without")}</g>
 {b_card}
 <g class="only-with">{keyglyph(360, 95)}
 <rect class="glowr s5-glow" x="188" y="36" width="24" height="184"/>
 <rect class="wallbar" x="196" y="36" width="8" height="184"/>
-<line class="atk s5-hit" x1="180" y1="191" x2="196" y2="191"/>
+<line class="atk s5-hit" x1="182" y1="191" x2="196" y2="191"/>
 {check(384, 40, 11, "s5-ck")}
 {text(8, 250, "ALSO: theo-admin@", "f12 mu s5-t1")}
 {text(8, 270, "BREAK-GLASS: 2 KEYS, 2 PLACES", "f12 mu s5-t2 last-with")}</g>
 </svg>'''
-    css('''.stage .f16{font-size:16px;font-weight:600}
-@media (max-width:40rem){#s5 .s5-dom{letter-spacing:0}}
+    css('''.stage .f16{font-size:17px;font-weight:600}
+.stage .s5-dom{letter-spacing:-.03em}
 .m-can{fill:var(--text)}.m-not{fill:var(--muted)}
 .band5{fill:var(--bad-tint)}
 #s5 .s5-a .card5{stroke:var(--bad)}
@@ -108,7 +108,7 @@ def s6():
 <circle class="ring s6-ring only-with" cx="130" cy="25" r="16"/>
 {token(130, 25, 12, "P")}{text(150, 30, "PRIYA", "f12")}
 <text class="s6-count" x="388" y="31" text-anchor="end"><tspan class="c31 only-with">31 → </tspan><tspan class="cnum">18</tspan><tspan class="f12" dx="6">ADMIN SEATS</tspan></text>
-{text(388, 46, "NEXT LOOK: APRIL", "f12 okc s6-next only-with last-with", "end")}
+{text(16, 292, "NEXT LOOK: APRIL", "f12 okc s6-next only-with last-with")}
 {"".join(heads)}
 <g class="s6-col10"><circle class="exhead" cx="{col(9)}" cy="56" r="6"/>{text(392, 292, "EX-CONTRACTOR", "f12 bd", "end")}</g>
 {cross(col(9), 56, 7, "s6-exx only-with")}

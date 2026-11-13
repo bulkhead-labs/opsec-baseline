@@ -79,15 +79,15 @@ def s2():
     setb = "".join(f'<line class="atk s2-b s2-b{i} only-without" x1="48" y1="160" x2="278" y2="{ys[i] + 15}"/>' for i in (3, 4, 5))
     tiles = []
     for i, (n, y) in enumerate(zip(names, ys)):
-        g = (f'<g class="s2-g only-with"><circle class="gb" cx="358" cy="{y + 15}" r="8"/>'
-             f'<text class="gch" x="358" y="{y + 19}" text-anchor="middle">G</text></g>')
-        d = "".join(f'<circle class="pw" cx="{352 + j * 6}" cy="{y + 15}" r="1.6"/>' for j in range(3))
+        g = (f'<g class="s2-g only-with"><circle class="gb" cx="362" cy="{y + 15}" r="8"/>'
+             f'<text class="gch" x="362" y="{y + 19}" text-anchor="middle">G</text></g>')
+        d = "".join(f'<circle class="pw" cx="{356 + j * 6}" cy="{y + 15}" r="1.6"/>' for j in range(3))
         if i < 3:
             badge = g.replace(" only-with", "")
         else:
             badge = f'<g class="only-without">{d}</g>' + g
         tiles.append(f'<g class="s2-t s2-t{i}"><rect class="obj box" x="278" y="{y}" width="96" height="30" rx="6"/>'
-                     f'{text(288, y + 20, n, "f13")}{badge}</g>')
+                     f'{text(287, y + 20, n, "f12 ls0")}{badge}</g>')
     svg = f'''<svg viewBox="0 0 400 300" role="img" aria-labelledby="s2-alt-with">
 <rect class="bnd" x="64" y="14" width="326" height="272" rx="12"/>
 {text(76, 32, "WREN STREET", "f12 mu")}

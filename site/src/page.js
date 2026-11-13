@@ -9,6 +9,7 @@
   var HOLD = { without: 5000, "with": 3500 };  // ms each state's final frame holds while the stage cycles
   var RESUME = 1500;                             // the least a hold runs after a pause ends
   var CYCLES = 3;                                // Without, With, three times; then rest on With
+  var INVITE = 3000;                             // ms into Without before the With button is lit
   var other = function (s) { return s === "with" ? "without" : "with"; };
 
   // ---------- Seen: an element at least half in view (or filling half the screen, if it is taller) ----------
@@ -52,6 +53,8 @@
     this.timer = 0;
     this.why = { hover: false, focus: false, offscreen: false, hidden: document.hidden };  // pause reasons
     this.shown = {};        // states the reader showed with the buttons
+    this.inv = this.col.querySelector(".b-with");
+    this.invT = 0;
     this.count = fig.querySelector(".cnum");
     this.n = 0;
     this.caps.without.hidden = this.state() !== "without";
@@ -122,6 +125,7 @@
     this.caps.without.hidden = state !== "without";
     this.caps["with"].hidden = state !== "with";
     this.svg.setAttribute("aria-labelledby", fig.id + "-alt-" + state);
+    this.invite(state);
     var play = animate && !reduced();
     if (this.count) {
       this.n = 0;
@@ -134,6 +138,15 @@
     } else {
       this.played(state);
     }
+  };
+  // A few seconds into Without, light the With button, until With shows. Only on the first Without of the cycle,
+  // or one the reader chose, and only until the reader has pressed With here: after that they know.
+  Stage.prototype.invite = function (state) {
+    var b = this.inv;
+    clearTimeout(this.invT);
+    b.classList.remove("is-invite");
+    if (state !== "without" || this.shown["with"] || (this.cycling && this.cycles > 0)) return;
+    this.invT = setTimeout(function () { b.classList.add("is-invite"); }, INVITE);
   };
   // A sequence reached its last frame.
   Stage.prototype.done = function (state) {

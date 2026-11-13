@@ -4,11 +4,14 @@
     python3 site/build.py                  # writes docs/index.html for GitHub Pages
     python3 site/build.py --preview OUT    # writes a self-contained page body (fonts inlined) to OUT
 
-The source is site/story.html. Fonts are self-hosted from docs/fonts/, so
+The source is site/src/ (gen.py and the scenes), which writes site/story.html. Fonts are self-hosted from docs/fonts/, so
 visitors' browsers make no third-party requests. The logo comes from assets/.
+Placeholders: <!--FONTS-->, <!--LOGO-->, <!--HULL:n--> (a hull with wall n lit) and
+<!--HULLNAV--> (the hull bar, each compartment a link to its wall).
 """
 import base64
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -48,6 +51,34 @@ def hull(n: int) -> str:
             + "".join(parts) + "</svg>")
 
 
+WALL_NAV = [
+    ("work-email", "Sign in with Google"),
+    ("password-manager", "Password manager"),
+    ("hardware-keys", "Hardware key"),
+    ("admin-split", "Separate admin accounts"),
+    ("admin-audit", "Admin audit"),
+    ("phone-sim", "Phone number lock"),
+    ("ai-connector-scopes", "AI connectors"),
+]
+
+
+def hullnav() -> str:
+    """The hull bar: the same hull as hull(), each compartment and the bow a link.
+    A transparent rect behind each gives it a hit area taller than the drawing."""
+    w, gap, h = 10, 3, 22
+    parts = []
+    for i, (anchor, name) in enumerate(WALL_NAV, start=1):
+        x = (i - 1) * (w + gap)
+        parts.append(f'<a href="#{anchor}" data-wall="{i}" aria-label="Wall {i} of {WALLS}: {name}">'
+                     f'<rect class="hit" x="{x - 1.5}" y="-7" width="{w + gap}" height="36"/>'
+                     f'<rect class="c" x="{x}" y="0" width="{w}" height="{h}"/></a>')
+    x = WALLS * (w + gap)
+    parts.append(f'<a href="#the-year" data-wall="8" aria-label="The year">'
+                 f'<rect class="hit" x="{x - 1.5}" y="-7" width="19" height="36"/>'
+                 f'<path class="bow" d="M{x} 0 C{x + 8} 0 {x + 12} 6 {x + 16} 11 C{x + 12} 16 {x + 8} 22 {x} 22 Z"/></a>')
+    return f'<svg class="hullnav" viewBox="-1 -1 {x + 18} {h + 2}">' + "".join(parts) + "</svg>"
+
+
 def logo() -> str:
     svg = (ROOT / "assets" / "bulkhead-lockup-light.svg").read_text()
     for hexv, var in FILLS.items():
@@ -57,7 +88,7 @@ def logo() -> str:
 
 def render(fonts: str) -> str:
     html = (ROOT / "site" / "story.html").read_text()
-    html = html.replace("<!--FONTS-->", fonts).replace("<!--LOGO-->", logo())
+    html = html.replace("<!--FONTS-->", fonts).replace("<!--LOGO-->", logo()).replace("<!--HULLNAV-->", hullnav())
     return re.sub(r"<!--HULL:(\d)-->", lambda m: hull(int(m.group(1))), html)
 
 
@@ -70,7 +101,13 @@ def preview_fonts() -> str:
     return "<style>" + "".join(faces) + "</style>"
 
 
+def generate() -> None:
+    """Regenerate site/story.html from site/src/ (the scenes, styles and script)."""
+    subprocess.run([sys.executable, str(ROOT / "site" / "src" / "gen.py")], check=True, cwd=ROOT / "site" / "src")
+
+
 def main() -> None:
+    generate()
     if len(sys.argv) == 3 and sys.argv[1] == "--preview":
         html = render(preview_fonts())
         # The preview host supplies its own document skeleton.

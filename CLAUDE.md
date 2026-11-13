@@ -52,9 +52,11 @@ and the modules you are touching before doing anything.
   (could I decide from this?) and as the agent (could I follow this
   without guessing, and without touching a secret?). Then search the
   diff for names, addresses and anything that looks like a client.
-- **The story page** (`site/story.html`) is the plain-language version
-  of the modules, served by GitHub Pages from `docs/`. Edit the source,
-  then run `python3 site/build.py` and commit `docs/index.html` with it.
+- **The story page** is the plain-language version of the modules,
+  served by GitHub Pages from `docs/`. Its source is `site/src/`: the
+  scenes, styles and script that `gen.py` turns into `site/story.html`.
+  Edit `site/src/`, run `python3 site/build.py`, and commit the
+  regenerated `site/story.html` and `docs/index.html` with it.
   A module change that alters a chapter's story, time or cost updates
   the chapter in the same PR. Analogies only where they really fit.
 - **Style:** short sentences, plain words, no scare words. Console paths

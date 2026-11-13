@@ -15,6 +15,10 @@ what it costs, what done looks like, and steps split between the team's
 people and its agent. The agent reads, inventories and keeps the
 checklist. A person does anything that could lock someone out.
 
+**New here? Read [Seven Walls](https://bulkhead-labs.github.io/opsec-baseline/)**,
+the story of one small company's year and the seven walls that held. No
+technical background needed.
+
 > **Status: v0.1 in progress.** Two of the first seven modules are
 > written. Until `v0.1` is tagged there is nothing to pin. Follow the
 > [v0.1 milestone](https://github.com/bulkhead-labs/opsec-baseline/milestone/1).

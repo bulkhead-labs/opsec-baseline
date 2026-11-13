@@ -10,8 +10,7 @@ In dependency order. A plan's prompt names modules by id.
 | `admin-split` | Super admin split | `hardware-keys` | Planned |
 | `admin-audit` | Least-privilege admin audit | `admin-split` | Planned |
 | `phone-sim` | Phone and SIM hardening | `password-manager` | Planned |
-| `data-flow-map` | The data-flow map | `work-email` | Planned |
-| `ai-connector-scopes` | AI connector scopes | `data-flow-map` | Planned |
+| `ai-connector-scopes` | AI connector scopes | `work-email` | Planned |
 
 The planned ids and dependencies may still change until `v0.1` is
 tagged. After that they are fixed.

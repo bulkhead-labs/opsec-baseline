@@ -15,7 +15,7 @@ what it costs, what done looks like, and steps split between the team's
 people and its agent. The agent reads, inventories and keeps the
 checklist. A person does anything that could lock someone out.
 
-> **Status: v0.1 in progress.** Two of the first eight modules are
+> **Status: v0.1 in progress.** Two of the first seven modules are
 > written. Until `v0.1` is tagged there is nothing to pin. Follow the
 > [v0.1 milestone](https://github.com/bulkhead-labs/opsec-baseline/milestone/1).
 
@@ -31,10 +31,9 @@ Roughly in dependency order. Each module names the ones it needs first.
 | 4 | Super admin split ([#3](https://github.com/bulkhead-labs/opsec-baseline/issues/3)) | Daily accounts that can change everything | One more Workspace seat per admin; the keys from 3 |
 | 5 | Least-privilege admin audit ([#4](https://github.com/bulkhead-labs/opsec-baseline/issues/4)) | Standing admin nobody needs | Time only |
 | 6 | Phone and SIM hardening ([#5](https://github.com/bulkhead-labs/opsec-baseline/issues/5)) | SIM swaps and port-outs | Time only |
-| 7 | The data-flow map ([#6](https://github.com/bulkhead-labs/opsec-baseline/issues/6)) | Not knowing where data goes, or who can touch it | Time only |
-| 8 | AI connector scopes ([#7](https://github.com/bulkhead-labs/opsec-baseline/issues/7)) | Agents and connectors with more access than their job needs | Time only |
+| 7 | AI connector scopes ([#7](https://github.com/bulkhead-labs/opsec-baseline/issues/7)) | Agents and connectors with more access than their job needs | Time only |
 
-Modules 3 to 8 are planned. Each has an issue in the
+Modules 3 to 7 are planned. Each has an issue in the
 [v0.1 milestone](https://github.com/bulkhead-labs/opsec-baseline/milestone/1).
 
 ## Use it with your agent

@@ -12,5 +12,4 @@ In dependency order. A plan's prompt names modules by id.
 | `phone-sim` | [Phone and SIM hardening](phone-sim.md) | `admin-split` | Written |
 | `ai-connector-scopes` | [AI connector scopes](ai-connector-scopes.md) | `password-manager` | Written |
 
-Ids and check numbers may still change until `v0.1` is tagged. After
-that they are fixed.
+Ids and check numbers are fixed from `v0.1` on.

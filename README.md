@@ -19,9 +19,8 @@ checklist. A person does anything that could lock someone out.
 the story of one small company's year and the seven walls that held. No
 technical background needed.
 
-> **Status: v0.1 in review.** All seven modules are written. Until
-> `v0.1` is tagged there is nothing to pin. Follow the
-> [v0.1 milestone](https://github.com/bulkhead-labs/opsec-baseline/milestone/1).
+> **Status: v0.1.** All seven modules are written. Pin `v0.1` in your
+> agent's prompt. [`CHANGELOG.md`](CHANGELOG.md) says what changed.
 
 ## The modules
 

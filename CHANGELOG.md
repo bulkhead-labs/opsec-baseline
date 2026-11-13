@@ -3,7 +3,7 @@
 What changed in each tag. A team's plan names a tag, so a change here
 never changes a plan a team already has.
 
-## Unreleased (v0.1)
+## v0.1 (2026-11-13)
 
 - The module format, `AGENTS.md` and the `opsec-baseline` skill.
 - `work-email`: work email, and sign in with Google.

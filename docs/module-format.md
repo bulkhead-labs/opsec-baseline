@@ -70,6 +70,7 @@ Each step names who does it:
   the step, waits, then checks the result.
 - **Person, each one**: a person's step that every person on the team
   does for their own account. The agent tracks who has done it.
+  **Person, each owner** is the same for a named group.
 
 When in doubt, a step belongs to a person.
 

@@ -121,7 +121,7 @@ seat price, see Google's pricing page (Sources).
    admin who stays. Before lowering or removing anyone, check that at
    least two people who keep the top role can sign in. Lower your own
    role last, if at all. (D2, D3)
-7. **Person, each owner (every admin on the table).** in each service
+7. **Person, each owner (every admin on the table).** In each service
    where you hold admin and sign in with that service's own password,
    turn on two-step verification, add both of your keys if it takes
    them, and an authenticator app if it doesn't. Its recovery codes go in your

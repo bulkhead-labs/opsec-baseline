@@ -48,7 +48,8 @@ seat price, see Google's pricing page (Sources).
   tool, the domain registrar and the DNS host), the role list matches
   the table: the top role is held by at least two people where the
   service allows it, by nobody beyond a written need, and by nobody who
-  has left.
+  has left. In a highly sensitive service (`admin-split` D8), those
+  people hold it on their admin login, as `admin-split` D9 to D11 say.
 - **D4.** Each service's top-level account, the one that can't be
   removed (the cloud account's root user, the payment tool's account
   owner, the chat workspace's primary owner), is on a company address
@@ -214,10 +215,11 @@ seat price, see Google's pricing page (Sources).
 - **The agent builds the table, a person cuts.** Reading role lists is
   slow and suits an agent. Removing a role can lock someone out, so a
   person does it.
-- **No separate admin accounts outside Google.** Most other services
-  give each person one account, and many sign in through Google, which
-  `admin-split` already guards. Elsewhere, fewer admins with keys does
-  the job.
+- **Separate admin accounts only where they count.** `admin-split`
+  gives admins a separate login in Google Workspace and in the other
+  highly sensitive services: the password manager, the registrar and
+  DNS host, the bank, the payment tool, payroll, the cloud account and
+  the code host. Everywhere else, fewer admins with keys does the job.
 - **Given up:** people who used to fix things themselves now ask an
   admin, and the quarterly review is a recurring half hour.
 

@@ -1,13 +1,13 @@
 ---
 id: admin-split
 title: Separate admin accounts
-summary: Admin rights live on separate key-only accounts held by at least two people, plus one break-glass account; daily accounts hold none.
+summary: Admin rights live on separate key-only accounts held by at least two people, plus one break-glass account, in Google Workspace and every other highly sensitive service; daily accounts hold none.
 depends_on: [hardware-keys]
 applies_to: [google-workspace, microsoft-365]
 default: Google Workspace admin accounts, with the YubiKeys from hardware-keys
-cost: One more Google Workspace seat per admin account, the break-glass account included, and two keys for the break-glass account
-time: 2 hours for the admins; 15 minutes each quarter
-checked: 2026-11-12
+cost: One more Google Workspace seat per admin account, the break-glass account included; two keys for the break-glass account; and an extra account in any other highly sensitive service that charges per account
+time: 2 hours for the admins, plus 20 minutes per admin in each other highly sensitive service; 15 minutes each quarter
+checked: 2026-11-14
 ---
 
 # Separate admin accounts
@@ -26,15 +26,18 @@ departure can lock everyone out.
 | Admin accounts | One more Google Workspace seat per person who administers | 30 minutes each |
 | Break-glass account | One more seat, and two keys of its own (ordered in `hardware-keys`) | 30 minutes |
 | Moving the roles | | 30 minutes |
+| Other highly sensitive services | One more Workspace seat for each person who administers one of them but has no admin account yet, and an extra account in any service that charges per account | 20 minutes per admin, per service |
 | Each quarter | | 15 minutes to test the break-glass account |
 
 The admins reuse their own two keys from `hardware-keys`: one key holds
 many accounts. For the current seat price, see Google's pricing page
-(Sources).
+(Sources). For another service, its own pricing page says whether it
+charges per account: 1Password Business does, a seat per account; AWS
+IAM and IAM Identity Center don't.
 
-This module covers the Google Workspace admin console. Admin rights in
-other services (GitHub, Slack, the cloud account, billing) are for
-`admin-audit` D3.
+D1 to D7 cover the Google Workspace admin console. D8 to D11 carry the
+same split to the other highly sensitive services. Who holds which role
+in each of them, and in every other service, is for `admin-audit`.
 
 ## What done looks like
 
@@ -61,6 +64,39 @@ other services (GitHub, Slack, the cloud account, billing) are for
   The checklist has the date of the last test.
 - **D7.** The offboarding list and the lost-key list cover admin
   accounts and the break-glass account.
+
+**Highly sensitive services.** A service is highly sensitive if a
+person with its admin or owner role can do any one of these:
+
+- change who can sign in to the company's accounts: the password
+  manager, the domain registrar and the DNS host (they control the
+  company's mail, and with it every password reset);
+- move the company's money: the bank, the payment tool, payroll;
+- change production, or reach the customer data in it: the cloud
+  account, and the code host that deploys to it.
+
+Google Workspace is the first of them; D1 to D7 cover it. Ask the same
+three questions of every other service on the `work-email` inventory.
+A yes to any one makes it highly sensitive. A tool that holds only a
+copy of some customer data, like the chat workspace, a CRM or a help
+desk, is not on the list: `admin-audit` keeps its admins few and on
+keys.
+
+- **D8.** The checklist lists every highly sensitive service, each with
+  the question it answers yes to and its setup: through Google (D9), a
+  separate login (D10), or a written reason for neither (D11).
+- **D9.** In each highly sensitive service that signs in with Google,
+  every admin or owner role is held only by `-admin@` accounts. Each
+  person's daily account there is a plain member, or has no account.
+- **D10.** In each highly sensitive service with its own login, each
+  admin does admin work from a separate login on their `-admin@`
+  address, with both of their keys where the service takes them. Their
+  daily login there, if they have one, holds no admin role.
+- **D11.** Each highly sensitive service with neither setup has the
+  reason written in the checklist: one of the two named under Agent
+  instructions, or the service allows only one login per person. Each
+  admin's one login there has two-step verification, with their keys
+  where the service takes them (`admin-audit` D5).
 
 ## Steps
 
@@ -135,6 +171,45 @@ other services (GitHub, Slack, the cloud account, billing) are for
       new one is registered and stored;
     - the inventory: Google Workspace's admins are now the admin
       accounts. (D7)
+12. **Agent.** Ask the three questions under "Highly sensitive
+    services" of each service on the `work-email` inventory, and list
+    the ones that answer yes. For each, look up on the vendor's own help
+    pages whether it signs in with Google, and whether it allows a
+    second login for the same person. Propose one setup for each: D9 if
+    it signs in with Google, D10 if it has its own login and allows a
+    second one, D11 with the reason otherwise, including the two named
+    under Agent instructions. List who needs an
+    `-admin@` account they don't have yet, and give the cost: a
+    Workspace seat for each, and an extra account where the service
+    charges per account. (D8)
+13. **Person.** For each person who administers one of these services
+    but not Google Workspace, a super admin adds their `-admin@` account
+    as in step 2, with no Google admin role, and the person does step 3.
+    (D9, D10)
+14. **Person, each one.** Service by service, while your daily account
+    still holds its role:
+    - **Signs in with Google (D9).** If Google controls who can use the
+      service, a Google admin turns it on for your admin account (for a
+      SAML app: `Admin console > Apps > Web and mobile apps > (the app)
+      > User access`). An admin of the service adds your
+      `-admin@` account with the role your daily account has. Sign in
+      with it and a key, and say it works.
+    - **Own login (D10).** Make a new login on your `-admin@` address,
+      with a password from 1Password's generator saved in your private
+      vault. Turn on two-step verification and add both of your keys, or
+      an authenticator app where it takes no keys; recovery codes go in
+      your private vault. An admin of the service gives the new login
+      the role. Sign in once with each key, and say it works.
+
+    Then an admin who stays lowers your daily account to a plain member,
+    or removes it. Keep at least two people with the top role at every
+    point (`admin-audit`). (D9, D10)
+15. **Person, each one.** At each D11 service, check that your one login
+    has two-step verification on, with both of your keys where it takes
+    them, and say so. (D11)
+16. **Agent.** Add each admin login from steps 13 and 14 to the
+    offboarding and lost-key lists from step 11, and record each
+    service's setup in the checklist. (D7, D8)
 
 ## Agent instructions
 
@@ -159,6 +234,30 @@ other services (GitHub, Slack, the cloud account, billing) are for
   it is.
 - **If the break-glass account signs in outside a quarterly test**, it is
   an event. Ask who used it and why, and record the answer.
+- **One setup per highly sensitive service**, in this order: through
+  Google if the service signs in with Google (D9); a separate login if
+  it has its own and allows a second one (D10); otherwise a written
+  reason (D11). If a service could sign in with Google but doesn't yet,
+  don't start that change here: use its own login and note the option.
+- **Two reasons for D11 are already decided:**
+  - **The password manager.** 1Password owners already sign in with
+    their own account password, Secret Key and keys, not through Google
+    (`password-manager` D4, `hardware-keys` D5), so a caught daily
+    Google account doesn't reach the owner role. A second 1Password
+    account would be another seat and another vault to keep. Record:
+    "owners sign in without Google".
+  - **GitHub.** Its terms allow one free personal account per person,
+    and GitHub advises one personal account for all work. Owners keep
+    the role on their own account, with both keys, and the organization
+    requires two-factor for everyone (`Settings > Authentication
+    security > Require two-factor authentication for everyone in your
+    organization`). Record: "one account per person by GitHub's terms".
+    A team on GitHub Enterprise with its own sign-in is different; ask.
+- **A bank or payroll login** is often one per person. If its help
+  pages or its support say so, that is the D11 reason. Never start an
+  account change at a bank yourself.
+- **Never lower a daily account first.** The admin login works before
+  the daily one loses its role, every time.
 - **Never** ask for a password, a backup code or a key's PIN.
 
 ## Evidence
@@ -172,6 +271,10 @@ other services (GitHub, Slack, the cloud account, billing) are for
 | D5 | The super admin account recovery setting, and the date |
 | D6 | The date of each test, which key, who did it, and that the sign-in showed in the log |
 | D7 | Where the offboarding and lost-key lists are kept, and the date they were updated |
+| D8 | Each highly sensitive service, the question it answers yes to, its setup (D9, D10 or D11), and the date |
+| D9 | For each such service: its admin role list showing only `-admin@` accounts, each daily account a plain member or absent, and the date |
+| D10 | For each such service and admin: the admin login's address, two-step on with keys or an app, the daily login's role, from their yes and the role list, and the date |
+| D11 | For each such service: the reason, and for each admin, two-step on there, with keys or an app, from their yes and the date |
 
 ## Variants
 
@@ -199,6 +302,8 @@ Microsoft's names and advice differ here:
   recovery.
 - D6: Microsoft asks for a test at least every 90 days, which the
   quarterly test meets.
+- D8 to D11: the same, with "signs in with Microsoft" in place of
+  Google, and the admin account from D1 as the admin identity.
 
 ## Why this default
 
@@ -215,15 +320,25 @@ Microsoft's names and advice differ here:
 - **Super admin recovery off.** Recovery by text message or email would
   be a weaker door than the key. Google's cloud guidance recommends
   keeping it off, and three super admin accounts can recover each other.
+- **Every highly sensitive service, not just Google.** A caught admin
+  session at the bank, the cloud account or the registrar reaches as
+  far as a Google super admin: the money, every customer, or everyone's
+  sign-in. The three questions keep the list short, so the split costs
+  a few accounts, not one per tool.
+- **Through Google first.** Where a service signs in with Google, the
+  `-admin@` account brings its keys and its "Only security key" policy
+  with it, and suspending it in Google closes it everywhere.
 - **Given up:** a seat for each admin account and for the break-glass
-  account, and a second sign-in whenever an admin needs the console.
+  account, an extra account in some services, and a second sign-in
+  whenever an admin needs a console. GitHub and the password manager
+  keep the role on one account, with keys.
 
 ## Sources
 
-All checked 2026-11-12.
+All checked 2026-11-12, except where a line says 2026-11-14.
 
 - [Google Workspace pricing](https://workspace.google.com/pricing): current seat prices.
-- [Security best practices for administrator accounts](https://knowledge.workspace.google.com/admin/users/security-best-practices-for-administrator-accounts): more than one super admin, each a different person; a separate daily account; security keys; a spare key; the recovery wizard asks for proof of the domain; a secondary email contact.
+- [Security best practices for administrator accounts](https://knowledge.workspace.google.com/admin/users/security-best-practices-for-administrator-accounts): more than one super admin, each a different person; a separate daily account; security keys; a spare key; the recovery wizard asks for proof of the domain; a secondary email contact. Checked 2026-11-14: "a separate, non-admin account for day-to-day activities".
 - [Super administrator account best practices](https://docs.cloud.google.com/resource-manager/docs/super-admin-best-practices): separate super admin accounts (`alice-admin@`); keep the key somewhere safe; keep self-recovery off.
 - [Make a user an admin](https://knowledge.workspace.google.com/admin/users/make-a-user-an-admin) and [Assign specific admin roles](https://knowledge.workspace.google.com/admin/users/assign-specific-admin-roles): `Directory > Users > Admin roles and privileges`; `Account > Admin roles`.
 - [Allow super administrators to recover their password](https://knowledge.workspace.google.com/admin/users/allow-super-administrators-to-recover-their-password): `Security > Authentication > Account recovery > Super admin account recovery`.
@@ -231,3 +346,11 @@ All checked 2026-11-12.
 - [User log events](https://knowledge.workspace.google.com/admin/reports/user-log-events): `Reporting > Audit and investigation > User log events`.
 - [Manage emergency access admin accounts](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access): two or more, cloud-only, passkeys (FIDO2), separate secure storage, Conditional Access exclusions, test at least every 90 days.
 - [Admin account security in Microsoft 365 for business](https://learn.microsoft.com/en-us/microsoft-365/admin/security-and-compliance/m365b-account-security-admins): admin-only accounts need no licence; a name that doesn't advertise admin; its advice on emergency accounts, which the Entra page supersedes.
+- [Set up your own custom SAML app](https://knowledge.workspace.google.com/admin/apps/set-up-your-own-custom-saml-app): `Apps > Web and mobile apps > (the app) > User access`, on or off per organizational unit or access group. Checked 2026-11-14.
+- [1Password Business pricing](https://1password.com/business-pricing): a seat per user. Checked 2026-11-14.
+- [IAM Identity Center FAQs](https://aws.amazon.com/iam/identity-center/faqs/) and [IAM FAQs](https://aws.amazon.com/iam/faqs/): both at no extra charge. Checked 2026-11-14.
+- [Use Google Workspace with IAM Identity Center](https://docs.aws.amazon.com/singlesignon/latest/userguide/gs-gwp.html): AWS sign-in through Google Workspace; turn the app on only for the users who need it. Checked 2026-11-14.
+- [AWS MFA](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html): IAM users take up to eight MFA devices, security keys included. Checked 2026-11-14.
+- [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service): "no more than one free Account" per person. Checked 2026-11-14.
+- [GitHub account management](https://docs.github.com/en/account-and-profile/concepts/account-management): "use one personal account for all your work on GitHub.com". Checked 2026-11-14.
+- [Requiring two-factor authentication in your organization](https://docs.github.com/en/organizations/keeping-your-organization-secure/managing-two-factor-authentication-for-your-organization/requiring-two-factor-authentication-in-your-organization): `Settings > Authentication security`. Checked 2026-11-14.

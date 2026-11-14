@@ -98,6 +98,12 @@ Statuses: `todo`, `in progress`, `waiting on <person>`, `done`,
 `not needed` (with the reason, and the person who agreed), `blocked`
 (with the reason).
 
+If the team's plan leaves out some checks of a module it names, for
+example a plan that keeps `admin-split` to Google Workspace only, copy
+those checks in anyway and mark them `not needed`, with the reason "out
+of scope in our plan" and the person who agreed. They stay visible, so
+a later plan can pick them up.
+
 The evidence column follows the module's Evidence section: a fact about
 a setting, the date, and who checked. Never a secret.
 

@@ -7,8 +7,8 @@ applies_to: [google-workspace, microsoft-365]
 default: YubiKey 5C NFC
 fallback: YubiKey 5 NFC, only for a computer with no USB-C port
 cost: Two security keys per person
-time: 2 hours for the admin; 30 minutes per person
-checked: 2026-11-12
+time: 2 hours of one-time company setup for the admin, over two weeks; 30 minutes per person, the admin included
+checked: 2026-11-14
 ---
 
 # Hardware keys
@@ -24,8 +24,11 @@ types them, while a security key answers only the real site.
 | | Cost | Time |
 |---|---|---|
 | YubiKey 5C NFC | Two keys per person: one on the keychain, one stored at home | |
-| Setup | | 2 hours for the admin, spread over two weeks |
-| Per person | | 30 minutes to register both keys in Google, in 1Password for the owners, and anything else that takes them |
+| Company setup, once | | 2 hours for the admin, spread over two weeks: ordering and handing out the keys, checking every user's keys, the lost-key list, the sign-in policy for the admins and then everyone, the 1Password policy, and the registrar and DNS host |
+| Per person, the admin included | | 30 minutes to set up both keys (a PIN on each) and register them in Google, in 1Password for the owners, and anything else that takes them |
+
+The admin's own keys are part of the 30 minutes, like everyone else's.
+The 2 hours is the work only the admin does for the whole company.
 
 If `admin-split` comes next, order two more keys now for its break-glass
 account. For the current price, see Yubico's product page (Sources).
@@ -57,6 +60,9 @@ include security keys, so no seat or plan changes.
   authenticator app.
 - **D8.** A written lost-key list says what to do when a key, or both,
   is lost. It is kept next to the offboarding list.
+- **D9.** Each of every person's two keys has a PIN, set by that person:
+  Yubico Authenticator's `Passkeys` screen asks for the PIN before it
+  shows anything on the key.
 
 ## Steps
 
@@ -68,19 +74,41 @@ include security keys, so no seat or plan changes.
    `admin-split` if it comes next. (D1)
 2. **Person.** Buy the keys from Yubico or a reseller it lists. When they
    arrive, label each pair `daily` and `spare` and hand them out. (D1)
-3. **Person, each one.** Register both keys on your Google account at
+3. **Person, each one.** Set up each key, then register both on Google.
+   For each key, in this order:
+   1. **Check that it has no PIN yet.** Install Yubico Authenticator
+      (Yubico's guide is in Sources), plug in the key and open `Passkeys`
+      from the menu on the left. A new key has no PIN, so the screen
+      offers `Manage > Set PIN`. If it asks you to enter a PIN and
+      `Unlock` instead, the key already has one. A new key never should:
+      stop, don't use it, and tell the admin.
+   2. **Set the PIN.** `Passkeys > Manage > Set PIN`. On an iPhone, in
+      the same app: the three dots, then `Configuration > FIDO > Manage
+      PIN`. Without the app, Chrome can do it: `chrome://settings/securityKeys
+      > Create a PIN`. Use 8 characters or more. Every YubiKey 5 takes
+      that, and keys with firmware 5.7 or later (the app's `Home` screen
+      shows it) may refuse a PIN that is too simple. Choose one you can
+      remember, and keep a copy in your private 1Password vault.
+      Remembering it matters: members unlock 1Password through Google,
+      and Google can ask for the key's PIN at sign-in, so a forgotten PIN
+      locks the vault copy away too. After three wrong PINs in a row,
+      unplug the key and plug it back in. After eight, it locks, and the
+      reset that unlocks it wipes the key, which must then be registered
+      again everywhere. Leave "always require user verification" off
+      (Agent instructions say why).
+   3. **Keep one, store one.** The key labelled `daily` stays with you,
+      on your keychain. The `spare` goes somewhere safe at home, not in
+      the laptop bag, as soon as this step is done. It comes out only to
+      be added to another account (steps 9 and 11, and `admin-split`) or
+      to replace a lost daily key.
+
+   Then register both keys on your Google account at
    `myaccount.google.com > Security > 2-Step Verification`, in the
    passkeys and security keys section (Google's help page in Sources
-   has a direct link). Google may offer to create a
-   passkey on the key; either choice counts as a security key. If the key
-   asks you to set a PIN, choose one you can remember, and keep a copy
-   in your private 1Password vault. Remembering it matters: members
-   unlock 1Password through Google, and Google can ask for the key's PIN
-   at sign-in, so a forgotten PIN locks the vault copy away too. A
-   YubiKey locks after eight wrong PINs in a row, and the reset that
-   unlocks it wipes the key, which must then be registered again
-   everywhere. Then sign out, sign in in a private window with the
-   daily key, and again with the spare. Put the spare away. (D1, D2)
+   has a direct link). Google may offer to create a passkey on the key;
+   either choice counts as a security key. Sign out, sign in in a
+   private window with the daily key, and again with the spare. Put the
+   spare away. (D1, D2, D9)
 4. **Agent.** Check, or ask an admin to check, `Admin console > Directory
    > Users > (the person) > Security > Passkeys & security keys` for every
    user. It should list two keys added by that person. The `Reporting >
@@ -159,8 +187,8 @@ include security keys, so no seat or plan changes.
   1. Sign in with the other key. Remove the lost one from Google (`2-Step
      Verification` settings), 1Password (owners only), the registrar and
      the DNS host.
-  2. Order a replacement. Register it everywhere, and make it the new
-     spare.
+  2. Order a replacement. Set its PIN as in step 3, register it
+     everywhere, and make it the new spare.
   3. Both keys lost: an admin generates backup codes in `Admin console >
      Directory > Users > (the person) > Security > 2-Step Verification >
      Get backup verification codes`, and gives them to the person on a
@@ -172,6 +200,19 @@ include security keys, so no seat or plan changes.
   where a key can't reach the browser, such as a remote desktop. Then
   name the need, apply "Allow security codes with remote access" only to
   that person's group, and record it.
+- **A PIN on every key, and "always require user verification" left
+  off.** With a PIN set, the key asks for it whenever a site asks for
+  one, and Google always does when it uses the key as a passkey. Used as
+  a plain second step after a password, the key may ask only for a
+  touch, which is still phishing-resistant. "Always require user
+  verification" would make every use ask, but it is set only from the
+  command line (`ykman fido config toggle-always-uv`, firmware 5.5 and
+  later), and 1Password takes security keys as FIDO U2F, which Yubico
+  doesn't say keeps working with it on. If someone has turned it on,
+  record it, and turn it off if a sign-in fails.
+- **Checking D9.** Ask each person to open `Passkeys` in Yubico
+  Authenticator with each key and say whether it asks for a PIN. Never
+  ask what the PIN is.
 - **Never** ask for a key's PIN, a backup code or a recovery code, and
   never hold a key.
 
@@ -187,6 +228,7 @@ include security keys, so no seat or plan changes.
 | D6 | That `password-manager` D4 is done: Unlock with SSO on for everyone but the owners, and the date |
 | D7 | For the registrar and the DNS host: keys added and by whom, or "no key support" with the help page checked |
 | D8 | Where the lost-key list is kept |
+| D9 | For each person: their yes that, for both keys, `Passkeys` asks for a PIN, and the date. Never the PIN |
 
 ## Variants
 
@@ -227,17 +269,21 @@ phone the same way. Everything else is the same.
 
 ## Sources
 
-All checked 2026-11-12.
+All checked 2026-11-12, except where a line says 2026-11-14.
 
 - [YubiKey 5C NFC](https://www.yubico.com/product/yubikey-5c-nfc/): current price; USB-C and NFC; FIDO2 and FIDO U2F; no battery.
 - [YubiKey 5 NFC](https://www.yubico.com/product/yubikey-5-nfc/): USB-A and NFC.
-- [FIDO specifics](https://docs.yubico.com/hardware/yubikey/yk-tech-manual/yk5-apps-fido.html): the FIDO2 PIN locks after eight wrong tries in a row; a reset destroys every FIDO2 and U2F credential on the key.
+- [FIDO specifics](https://docs.yubico.com/hardware/yubikey/yk-tech-manual/yk5-apps-fido.html): the FIDO2 PIN locks after eight wrong tries in a row; a reset destroys every FIDO2 and U2F credential on the key. Checked 2026-11-14: keys ship without a PIN; PIN length 4 to 63 characters, 6 or more with PIN complexity on firmware 5.7 and later; "always require user verification" from firmware 5.5, off by default on the YubiKey 5 Series.
+- [Yubico Authenticator: FIDO2](https://docs.yubico.com/software/yubikey/tools/authenticator/auth-guide/fido2.html): `Passkeys > Manage > Set PIN`; a key with a PIN asks for it and `Unlock`; on iOS, `Configuration > FIDO > Manage PIN`; three wrong tries in a row need the key removed and reinserted, eight block it. Checked 2026-11-14.
+- [ykman FIDO commands](https://docs.yubico.com/software/yubikey/tools/ykman/FIDO_Commands.html): `ykman fido config toggle-always-uv`. Checked 2026-11-14.
+- [YubiKey firmware is not upgradable](https://support.yubico.com/s/article/YubiKey-firmware-is-not-upgradable): the firmware can't be changed after manufacture. Checked 2026-11-14.
+- [Use a security key in Chrome](https://support.google.com/chrome/answer/10468685): `Manage security keys > Create a PIN`. Checked 2026-11-14.
 - [Deploy 2-Step Verification](https://knowledge.workspace.google.com/admin/security/deploy-2-step-verification): `Security > Authentication > 2-step verification`; "Only security key" covers security keys and passkeys; security code options; under "Only security key", only an admin can make backup codes; the new user enrollment period (1 day to 6 months, for new users); the 2-Step Verification policy suspension grace period (sign-in with admin-made backup codes); settings per organizational unit or group, and group settings override organizational units.
 - [Manage a user's security settings](https://knowledge.workspace.google.com/admin/security/manage-a-users-security-settings): `Directory > Users > Security`, "Passkeys & security keys", "Get backup verification codes"; only super admins make codes for other admins.
 - [User reports: Security](https://knowledge.workspace.google.com/admin/reports/user-reports-security): key counts can be inflated by built-in keys, and lag up to 48 hours.
 - [Use a security key for 2-Step Verification](https://support.google.com/accounts/answer/6103523): registering, passkey or plain key, removing a lost key.
 - [Compare Business editions](https://knowledge.workspace.google.com/admin/getting-started/editions/compare-business-editions): security keys are in Business Starter.
-- [Use a security key with 1Password](https://support.1password.com/security-key/): `Manage Account > More Actions > Manage Two-Factor Authentication > Add a Security Key`; more than one key.
+- [Use a security key with 1Password](https://support.1password.com/security-key/): `Manage Account > More Actions > Manage Two-Factor Authentication > Add a Security Key`; more than one key. Checked 2026-11-14: needs "a FIDO U2F-compatible security key"; may ask for the key's PIN.
 - [Manage two-factor authentication](https://support.1password.com/manage-two-factor-authentication/): the Authentication policy; security keys allowed; no setting to require keys only.
 - [Cloudflare two-factor authentication](https://developers.cloudflare.com/fundamentals/user-profiles/2fa/): an example of a DNS host and registrar that takes several security keys.
 - [Enable passkeys (FIDO2) in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-authentication-passkeys-fido2): the policy path; in every Entra ID edition.
